@@ -1,0 +1,22 @@
+# Run linters automatically on pull requests.
+name: Lint
+on:
+  pull_request:
+
+jobs:
+  ament_lint:
+    name: ament_${{ matrix.linter }}
+    runs-on: ubuntu-latest
+    container:
+      image: rostooling/setup-ros-docker:ubuntu-focal-ros-rolling-ros-base-latest
+    strategy:
+      fail-fast: false
+      matrix:
+          linter: [copyright, xmllint, cppcheck, cpplint, uncrustify, pep257, flake8]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ros-tooling/action-ros-lint@v0.1
+      with:
+        linter: ${{ matrix.linter }}
+        distribution: rolling
+        package-name: topic_tools
