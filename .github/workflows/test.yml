@@ -32,7 +32,7 @@ jobs:
               "pytest-args": ["-m", "not xfail"]
             }
           }
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v2.2.3
       with:
         name: colcon-logs
         path: ros_ws/log
