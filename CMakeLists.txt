@@ -8,7 +8,13 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(rclcpp_components REQUIRED)
+
+add_executable(relay src/relay.cpp)
+ament_target_dependencies(relay rclcpp)
+
+install(TARGETS
+  relay
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
