@@ -20,7 +20,7 @@ class RelayNode : public rclcpp::Node {
 
 RelayNode::RelayNode() : rclcpp::Node("Relay") {
   std::string input_topic = declare_parameter<std::string>("input_topic");
-  std::string output_topic = declare_parameter<std::string>("output_topic");
+  std::string output_topic = declare_parameter<std::string>("output_topic", input_topic + "_relay");
   std::string topic_type = declare_parameter<std::string>("type");
   pub_ = this->create_generic_publisher(output_topic, topic_type, rclcpp::QoS(1));
   sub_ = this->create_generic_subscription(
