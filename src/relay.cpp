@@ -28,6 +28,18 @@ class RelayNode : public rclcpp::Node {
 RelayNode::RelayNode() : rclcpp::Node("Relay") {
   input_topic = declare_parameter<std::string>("input_topic");
   output_topic = declare_parameter<std::string>("output_topic", input_topic + "_relay");
+
+  auto topic_names_and_types = this->get_topic_names_and_types();
+  auto topic_type_i = topic_names_and_types.find(input_topic);
+
+  if (topic_type_i == topic_names_and_types.end()) {
+    std::cout << "error: input topic doesn't exist" << std::endl;
+    return;
+  }
+
+  topic_type = topic_type_i->second[0];
+  
+
   pub_ = this->create_generic_publisher(output_topic, topic_type, rclcpp::QoS(1));
 
   subscribe();
