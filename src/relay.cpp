@@ -20,6 +20,7 @@ class RelayNode : public rclcpp::Node {
   private:
     void incoming_message_callback(std::shared_ptr<rclcpp::SerializedMessage> msg);
     void timer_callback();
+    void subscribe();
     void unsubscribe();
     std::optional<std::string> try_find_topic_type();
 
@@ -28,12 +29,14 @@ class RelayNode : public rclcpp::Node {
     rclcpp::TimerBase::SharedPtr timer_;
     std::string input_topic;
     std::string output_topic;
+    bool lazy;
     std::optional<std::string> topic_type;
 };
 
 RelayNode::RelayNode() : rclcpp::Node("Relay") {
-  input_topic = declare_parameter<std::string>("input_topic");
+  input_topic  = declare_parameter<std::string>("input_topic");
   output_topic = declare_parameter<std::string>("output_topic", input_topic + "_relay");
+  lazy         = declare_parameter<bool>       ("lazy", false);
 
   auto ros_clock = rclcpp::Clock::make_shared();
   timer_ = rclcpp::create_timer(this, ros_clock, LOOP_PERIOD, [=](){ timer_callback(); });
@@ -47,7 +50,16 @@ void RelayNode::timer_callback() {
     if (topic_type = try_find_topic_type()) {
       // we just found the topic type, so create the publisher and the subscriber
       pub_ = this->create_generic_publisher(output_topic, *topic_type, rclcpp::QoS(1));
-      sub_ = this->create_generic_subscription(input_topic, *topic_type, rclcpp::QoS(1), std::bind(&RelayNode::incoming_message_callback, this, std::placeholders::_1));
+      if (!lazy) subscribe();
+    }
+  }
+  if (lazy) {
+    const size_t sub_count = pub_->get_subscription_count();
+    if (sub_count > 0) {
+      if (!sub_) subscribe();
+    }
+    else {
+      if (sub_) unsubscribe();
     }
   }
 }
@@ -73,6 +85,10 @@ std::optional<std::string> RelayNode::try_find_topic_type() {
   }
 
   return {};
+}
+
+void RelayNode::subscribe() {
+  sub_ = this->create_generic_subscription(input_topic, *topic_type, rclcpp::QoS(1), std::bind(&RelayNode::incoming_message_callback, this, std::placeholders::_1));
 }
 
 void RelayNode::unsubscribe() {
