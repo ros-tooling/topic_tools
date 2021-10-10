@@ -8,6 +8,8 @@
 
 using namespace std::chrono_literals;
 
+const auto LOOP_PERIOD = 100ms;
+
 namespace topic_tools
 {
 
@@ -34,7 +36,7 @@ RelayNode::RelayNode() : rclcpp::Node("Relay") {
   output_topic = declare_parameter<std::string>("output_topic", input_topic + "_relay");
 
   auto ros_clock = rclcpp::Clock::make_shared();
-  timer_ = rclcpp::create_timer(this, ros_clock, 1s, [=](){ timer_callback(); });
+  timer_ = rclcpp::create_timer(this, ros_clock, LOOP_PERIOD, [=](){ timer_callback(); });
 
   // so that we execute the loop the first time instantly
   timer_callback();
