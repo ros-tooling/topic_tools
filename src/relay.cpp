@@ -53,7 +53,7 @@ void RelayNode::timer_callback() {
       if (!lazy) subscribe();
     }
   }
-  if (lazy) {
+  else if (lazy) {
     const size_t sub_count = pub_->get_subscription_count();
     if (sub_count > 0) {
       if (!sub_) subscribe();
