@@ -15,13 +15,15 @@ namespace topic_tools
 
 class RelayNode : public rclcpp::Node {
   public:
-    RelayNode();
+    RelayNode(const std::string node_name, const rclcpp::NodeOptions &options);
+    RelayNode(const std::string node_name, const std::string input_topic, const std::string output_topic);
 
   private:
     void incoming_message_callback(std::shared_ptr<rclcpp::SerializedMessage> msg);
     void timer_callback();
     void subscribe();
     void unsubscribe();
+    void initialize();
     std::optional<std::string> try_find_topic_type();
 
     rclcpp::GenericSubscription::SharedPtr sub_;
@@ -33,10 +35,26 @@ class RelayNode : public rclcpp::Node {
     std::optional<std::string> topic_type;
 };
 
-RelayNode::RelayNode() : rclcpp::Node("Relay") {
+RelayNode::RelayNode(const std::string node_name, const rclcpp::NodeOptions &options = rclcpp::NodeOptions()) : rclcpp::Node(node_name, options) {
   input_topic  = declare_parameter<std::string>("input_topic");
   output_topic = declare_parameter<std::string>("output_topic", input_topic + "_relay");
-  lazy         = declare_parameter<bool>       ("lazy", false);
+  initialize();
+}
+
+RelayNode::RelayNode(
+  std::string node_name, 
+  std::string input_topic, 
+  std::string output_topic
+  ) : 
+    rclcpp::Node(node_name), 
+    input_topic(input_topic), 
+    output_topic(output_topic) { 
+
+  initialize();
+}
+
+void RelayNode::initialize() {
+  lazy = declare_parameter<bool>("lazy", false);
 
   auto ros_clock = rclcpp::Clock::make_shared();
   timer_ = rclcpp::create_timer(this, ros_clock, LOOP_PERIOD, [=](){ timer_callback(); });
@@ -106,7 +124,18 @@ void RelayNode::incoming_message_callback(std::shared_ptr<rclcpp::SerializedMess
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<topic_tools::RelayNode>());
+
+  std::shared_ptr<topic_tools::RelayNode> node;
+
+  if (argc >= 2 && strcmp(argv[1], "--ros-args")) {
+    std::string output_topic = (argc >= 3 && strcmp(argv[2], "--ros-args")) ? argv[2] : std::string(argv[2]) + "_relay";
+    node = std::make_shared<topic_tools::RelayNode>("Relay", argv[1], output_topic);
+  }
+  else {
+    node = std::make_shared<topic_tools::RelayNode>("Relay");
+  }
+
+  rclcpp::spin(node);
   rclcpp::shutdown();
   return 0;
 }
