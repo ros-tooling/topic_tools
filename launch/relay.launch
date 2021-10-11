@@ -1,0 +1,6 @@
+<launch>
+    <node pkg="topic_tools" exec="relay" name="relay">
+        <param name="input_topic" value="/relay_input"/>
+        <param name="output_topic" value="/relay_output"/>
+    </node>
+</launch>
