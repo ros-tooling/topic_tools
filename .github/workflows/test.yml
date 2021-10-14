@@ -3,7 +3,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
   schedule:
     # Run every hour. This helps detect flakiness,
     # and broken external dependencies.
