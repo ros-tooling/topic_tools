@@ -15,10 +15,9 @@ jobs:
           linter:
             - copyright
             - xmllint
-            # CPP linters return error on "no files found" - reenable when there is code
-            # - cppcheck
-            # - cpplint
-            # - uncrustify
+            - cppcheck
+            - cpplint
+            - uncrustify
             - pep257
             - flake8
     steps:
