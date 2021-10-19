@@ -42,7 +42,7 @@ namespace topic_tools
 
     rclcpp::GenericSubscription::SharedPtr sub_;
     rclcpp::GenericPublisher::SharedPtr pub_;
-    rclcpp::TimerBase::SharedPtr timer_;
+    rclcpp::TimerBase::SharedPtr discovery_timer_;
     std::string input_topic_;
     std::string output_topic_;
     bool lazy_;
@@ -57,9 +57,7 @@ namespace topic_tools
     output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_relay");
     lazy_ = declare_parameter<bool>("lazy", false);
 
-    auto ros_clock = rclcpp::Clock::make_shared();
-    timer_ = rclcpp::create_timer(this, ros_clock, LOOP_PERIOD, 
-                                  std::bind(&RelayNode::timer_callback, this));
+    discovery_timer_ = this->create_wall_timer(LOOP_PERIOD, std::bind(&RelayNode::timer_callback, this));
 
     // so that we execute the loop the first time instantly
     timer_callback();
