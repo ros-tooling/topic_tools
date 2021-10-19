@@ -34,7 +34,7 @@ namespace topic_tools
     void make_subscribe_unsubscribe_decisions();
     void subscribe();
     void unsubscribe();
-    std::optional<std::string> try_find_topic_type();
+    std::optional<std::pair<std::string, rclcpp::QoS>> try_discover_source();
 
     std::chrono::duration<float> discovery_period_ = std::chrono::milliseconds{100};
     rclcpp::GenericSubscription::SharedPtr sub_;
@@ -44,6 +44,7 @@ namespace topic_tools
     std::string output_topic_;
     bool lazy_;
     std::optional<std::string> topic_type_;
+    std::optional<rclcpp::QoS> qos_profile_;
   };
 
   RelayNode::RelayNode(
@@ -62,64 +63,64 @@ namespace topic_tools
 
   void RelayNode::make_subscribe_unsubscribe_decisions()
   {
-    if (!topic_type_)
+
+    if (auto source_info = try_discover_source())
     {
-      if (topic_type_ = try_find_topic_type())
+      // always relay same topic type and QoS profile as the first available source
+      if (*topic_type_ != source_info->first || *qos_profile_ != source_info->second)
       {
-        // we just found the topic type, so create the publisher and the subscriber
-        pub_ = this->create_generic_publisher(output_topic_, *topic_type_, rclcpp::QoS(1));
-        if (!lazy_){
-          subscribe();
-        }
+        std::cout << "topic type / qos profile changed\n";
+        
+        topic_type_ = source_info->first;
+        qos_profile_ = source_info->second;
+        pub_ = this->create_generic_publisher(output_topic_, *topic_type_, *qos_profile_);
       }
-    } 
-    else if (lazy_)
-    {
-      const size_t sub_count = pub_->get_subscription_count();
-      if (sub_count > 0)
+
+      // at this point it is certain that our publisher exists
+      if (!lazy_ || pub_->get_subscription_count() > 0)
       {
-        if (!sub_){
+        if (!sub_)
+        {
           subscribe();
         }
-      } else
+      } 
+      else
       {
-        if (sub_) {
+        if (sub_) 
+        {
           unsubscribe();
         }
       }
     }
+    else
+    {
+      // we don't have any source to republish, so we don't need a publisher
+      // also, if the source topic type changes while it's offline this
+      // prevents a crash due to mismatched topic types
+      pub_.reset();
+    }
   }
 
-  /*
-Since we don't know the topic type in advance we need to determine it from
-either the input_topic_ or the output_topic_. If only one of them exists, we
-use its type, but if both exist an arbitrary decision was made here to use
-the type of input_topic_.
-*/
-  std::optional<std::string> RelayNode::try_find_topic_type()
+  /* Since we don't know the topic type and QoS profile in advance we need to determine them from
+  the input_topic_. */
+  std::optional<std::pair<std::string, rclcpp::QoS>> RelayNode::try_discover_source()
   {
-    auto const topic_names_and_types = this->get_topic_names_and_types();
-    auto topic_type_i = topic_names_and_types.find(input_topic_);
-
-    if (topic_type_i != topic_names_and_types.end())
+    auto publishers_info = this->get_publishers_info_by_topic(input_topic_);
+    std::optional<rclcpp::QoS> qos_profile;
+    if (!publishers_info.empty()) 
     {
-      return topic_type_i->second[0];
+      return std::make_pair(publishers_info[0].topic_type(), publishers_info[0].qos_profile());
     }
-
-    topic_type_i = topic_names_and_types.find(output_topic_);
-
-    if (topic_type_i != topic_names_and_types.end())
+    else
     {
-      return topic_type_i->second[0];
+      return {};
     }
-
-    return {};
   }
 
   void RelayNode::subscribe()
   {
     sub_ = this->create_generic_subscription(
-      input_topic_, *topic_type_, rclcpp::QoS(1), 
+      input_topic_, *topic_type_, *qos_profile_, 
       std::bind(&RelayNode::republish_message, this, std::placeholders::_1));
   }
 
