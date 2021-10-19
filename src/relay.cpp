@@ -32,8 +32,6 @@ namespace topic_tools
   private:
     void republish_message(std::shared_ptr<rclcpp::SerializedMessage> msg);
     void make_subscribe_unsubscribe_decisions();
-    void subscribe();
-    void unsubscribe();
     std::optional<std::pair<std::string, rclcpp::QoS>> try_discover_source();
 
     std::chrono::duration<float> discovery_period_ = std::chrono::milliseconds{100};
@@ -81,15 +79,14 @@ namespace topic_tools
       {
         if (!sub_)
         {
-          subscribe();
+          sub_ = this->create_generic_subscription(
+            input_topic_, *topic_type_, *qos_profile_, 
+            std::bind(&RelayNode::republish_message, this, std::placeholders::_1));
         }
       } 
       else
       {
-        if (sub_) 
-        {
-          unsubscribe();
-        }
+        sub_.reset();
       }
     }
     else
@@ -115,18 +112,6 @@ namespace topic_tools
     {
       return {};
     }
-  }
-
-  void RelayNode::subscribe()
-  {
-    sub_ = this->create_generic_subscription(
-      input_topic_, *topic_type_, *qos_profile_, 
-      std::bind(&RelayNode::republish_message, this, std::placeholders::_1));
-  }
-
-  void RelayNode::unsubscribe()
-  {
-    sub_.reset();
   }
 
   void RelayNode::republish_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
