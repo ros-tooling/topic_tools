@@ -31,9 +31,7 @@ namespace topic_tools
   class RelayNode : public rclcpp::Node
   {
   public:
-    RelayNode(
-      const std::string node_name, 
-      const rclcpp::NodeOptions &options);
+    RelayNode(const std::string node_name, const rclcpp::NodeOptions &options);
 
   private:
     void incoming_message_callback(std::shared_ptr<rclcpp::SerializedMessage> msg);
@@ -45,19 +43,19 @@ namespace topic_tools
     rclcpp::GenericSubscription::SharedPtr sub_;
     rclcpp::GenericPublisher::SharedPtr pub_;
     rclcpp::TimerBase::SharedPtr timer_;
-    std::string input_topic;
-    std::string output_topic;
-    bool lazy;
-    std::optional<std::string> topic_type;
+    std::string input_topic_;
+    std::string output_topic_;
+    bool lazy_;
+    std::optional<std::string> topic_type_;
   };
 
   RelayNode::RelayNode(
     const std::string node_name, const rclcpp::NodeOptions &options = rclcpp::NodeOptions()) 
     : rclcpp::Node(node_name, options)
   {
-    input_topic = declare_parameter<std::string>("input_topic");
-    output_topic = declare_parameter<std::string>("output_topic", input_topic + "_relay");
-    lazy = declare_parameter<bool>("lazy", false);
+    input_topic_ = declare_parameter<std::string>("input_topic");
+    output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_relay");
+    lazy_ = declare_parameter<bool>("lazy", false);
 
     auto ros_clock = rclcpp::Clock::make_shared();
     timer_ = rclcpp::create_timer(this, ros_clock, LOOP_PERIOD, 
@@ -69,18 +67,18 @@ namespace topic_tools
 
   void RelayNode::timer_callback()
   {
-    if (!topic_type)
+    if (!topic_type_)
     {
-      if (topic_type = try_find_topic_type())
+      if (topic_type_ = try_find_topic_type())
       {
         // we just found the topic type, so create the publisher and the subscriber
-        pub_ = this->create_generic_publisher(output_topic, *topic_type, rclcpp::QoS(1));
-        if (!lazy){
+        pub_ = this->create_generic_publisher(output_topic_, *topic_type_, rclcpp::QoS(1));
+        if (!lazy_){
           subscribe();
         }
       }
     } 
-    else if (lazy)
+    else if (lazy_)
     {
       const size_t sub_count = pub_->get_subscription_count();
       if (sub_count > 0)
@@ -99,21 +97,21 @@ namespace topic_tools
 
   /*
 Since we don't know the topic type in advance we need to determine it from
-either the input_topic or the output_topic. If only one of them exists, we
+either the input_topic_ or the output_topic_. If only one of them exists, we
 use its type, but if both exist an arbitrary decision was made here to use
-the type of input_topic.
+the type of input_topic_.
 */
   std::optional<std::string> RelayNode::try_find_topic_type()
   {
     auto const topic_names_and_types = this->get_topic_names_and_types();
-    auto topic_type_i = topic_names_and_types.find(input_topic);
+    auto topic_type_i = topic_names_and_types.find(input_topic_);
 
     if (topic_type_i != topic_names_and_types.end())
     {
       return topic_type_i->second[0];
     }
 
-    topic_type_i = topic_names_and_types.find(output_topic);
+    topic_type_i = topic_names_and_types.find(output_topic_);
 
     if (topic_type_i != topic_names_and_types.end())
     {
@@ -126,7 +124,7 @@ the type of input_topic.
   void RelayNode::subscribe()
   {
     sub_ = this->create_generic_subscription(
-      input_topic, *topic_type, rclcpp::QoS(1), 
+      input_topic_, *topic_type_, rclcpp::QoS(1), 
       std::bind(&RelayNode::incoming_message_callback, this, std::placeholders::_1));
   }
 
