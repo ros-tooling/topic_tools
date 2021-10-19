@@ -126,9 +126,7 @@ namespace topic_tools
 
   void RelayNode::unsubscribe()
   {
-    if (sub_) {
-      sub_.reset();
-    }
+    sub_.reset();
   }
 
   void RelayNode::republish_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
