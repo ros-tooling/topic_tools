@@ -131,8 +131,7 @@ namespace topic_tools
 
   void RelayNode::republish_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
   {
-    rclcpp::SerializedMessage msg_rcl = *msg.get();
-    pub_->publish(msg_rcl);
+    pub_->publish(*msg);
   }
 
 } // namespace topic_tools
