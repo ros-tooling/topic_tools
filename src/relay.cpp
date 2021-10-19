@@ -67,8 +67,6 @@ namespace topic_tools
       // always relay same topic type and QoS profile as the first available source
       if (*topic_type_ != source_info->first || *qos_profile_ != source_info->second)
       {
-        std::cout << "topic type / qos profile changed\n";
-        
         topic_type_ = source_info->first;
         qos_profile_ = source_info->second;
         pub_ = this->create_generic_publisher(output_topic_, *topic_type_, *qos_profile_);
@@ -98,8 +96,10 @@ namespace topic_tools
     }
   }
 
-  /* Since we don't know the topic type and QoS profile in advance we need to determine them from
-  the input_topic_. */
+  /* 
+  Returns an optional pair <topic type, QoS profile> of the first found source publishing
+  on `input_topic_` if at least one source is found
+  */
   std::optional<std::pair<std::string, rclcpp::QoS>> RelayNode::try_discover_source()
   {
     auto publishers_info = this->get_publishers_info_by_topic(input_topic_);
