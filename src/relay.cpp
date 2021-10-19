@@ -34,18 +34,12 @@ namespace topic_tools
     RelayNode(
       const std::string node_name, 
       const rclcpp::NodeOptions &options);
-      
-    RelayNode(
-      const std::string node_name, 
-      const std::string input_topic, 
-      const std::string output_topic);
 
   private:
     void incoming_message_callback(std::shared_ptr<rclcpp::SerializedMessage> msg);
     void timer_callback();
     void subscribe();
     void unsubscribe();
-    void initialize();
     std::optional<std::string> try_find_topic_type();
 
     rclcpp::GenericSubscription::SharedPtr sub_;
@@ -63,26 +57,11 @@ namespace topic_tools
   {
     input_topic = declare_parameter<std::string>("input_topic");
     output_topic = declare_parameter<std::string>("output_topic", input_topic + "_relay");
-    initialize();
-  }
-
-  RelayNode::RelayNode(
-      std::string node_name,
-      std::string input_topic,
-      std::string output_topic) : rclcpp::Node(node_name),
-                                  input_topic(input_topic),
-                                  output_topic(output_topic)
-  {
-    initialize();
-  }
-
-  void RelayNode::initialize()
-  {
     lazy = declare_parameter<bool>("lazy", false);
 
     auto ros_clock = rclcpp::Clock::make_shared();
-    timer_ = rclcpp::create_timer(this, ros_clock, LOOP_PERIOD, [=]()
-                                  { timer_callback(); });
+    timer_ = rclcpp::create_timer(this, ros_clock, LOOP_PERIOD, 
+                                  std::bind(&RelayNode::timer_callback, this));
 
     // so that we execute the loop the first time instantly
     timer_callback();
@@ -171,25 +150,18 @@ int main(int argc, char *argv[])
   rclcpp::init(argc, argv);
 
   std::shared_ptr<topic_tools::RelayNode> node;
+  auto options = rclcpp::NodeOptions();
 
   if (argc >= 2 && strcmp(argv[1], "--ros-args"))
   {
-    std::string output_topic;
+    options.append_parameter_override("input_topic", argv[1]);
     if (argc >= 3 && strcmp(argv[2], "--ros-args"))
     {
-      output_topic = argv[2];
+      options.append_parameter_override("output_topic", argv[2]);
     }
-    else 
-    {
-      output_topic = std::string(argv[1]) + "_relay";
-    }
-    node = std::make_shared<topic_tools::RelayNode>("Relay", argv[1], output_topic);
   }
-  else
-  {
-    node = std::make_shared<topic_tools::RelayNode>("Relay");
-  }
-
+  node = std::make_shared<topic_tools::RelayNode>("Relay", options);
+  
   rclcpp::spin(node);
   rclcpp::shutdown();
   return 0;
