@@ -21,10 +21,6 @@
 #include <memory>
 #include <string>
 
-using namespace std::chrono_literals;
-
-const auto LOOP_PERIOD = 100ms;
-
 namespace topic_tools
 {
 
@@ -40,6 +36,7 @@ namespace topic_tools
     void unsubscribe();
     std::optional<std::string> try_find_topic_type();
 
+    std::chrono::duration<float> discovery_period_ = std::chrono::milliseconds{100};
     rclcpp::GenericSubscription::SharedPtr sub_;
     rclcpp::GenericPublisher::SharedPtr pub_;
     rclcpp::TimerBase::SharedPtr discovery_timer_;
@@ -57,7 +54,7 @@ namespace topic_tools
     output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_relay");
     lazy_ = declare_parameter<bool>("lazy", false);
 
-    discovery_timer_ = this->create_wall_timer(LOOP_PERIOD, std::bind(&RelayNode::timer_callback, this));
+    discovery_timer_ = this->create_wall_timer(discovery_period_, std::bind(&RelayNode::timer_callback, this));
 
     // so that we execute the loop the first time instantly
     timer_callback();
