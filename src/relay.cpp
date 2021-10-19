@@ -30,8 +30,8 @@ namespace topic_tools
     RelayNode(const std::string node_name, const rclcpp::NodeOptions &options);
 
   private:
-    void incoming_message_callback(std::shared_ptr<rclcpp::SerializedMessage> msg);
-    void timer_callback();
+    void republish_message(std::shared_ptr<rclcpp::SerializedMessage> msg);
+    void make_subscribe_unsubscribe_decisions();
     void subscribe();
     void unsubscribe();
     std::optional<std::string> try_find_topic_type();
@@ -54,13 +54,13 @@ namespace topic_tools
     output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_relay");
     lazy_ = declare_parameter<bool>("lazy", false);
 
-    discovery_timer_ = this->create_wall_timer(discovery_period_, std::bind(&RelayNode::timer_callback, this));
+    discovery_timer_ = this->create_wall_timer(discovery_period_, 
+                          std::bind(&RelayNode::make_subscribe_unsubscribe_decisions, this));
 
-    // so that we execute the loop the first time instantly
-    timer_callback();
+    make_subscribe_unsubscribe_decisions();
   }
 
-  void RelayNode::timer_callback()
+  void RelayNode::make_subscribe_unsubscribe_decisions()
   {
     if (!topic_type_)
     {
@@ -120,7 +120,7 @@ the type of input_topic_.
   {
     sub_ = this->create_generic_subscription(
       input_topic_, *topic_type_, rclcpp::QoS(1), 
-      std::bind(&RelayNode::incoming_message_callback, this, std::placeholders::_1));
+      std::bind(&RelayNode::republish_message, this, std::placeholders::_1));
   }
 
   void RelayNode::unsubscribe()
@@ -130,7 +130,7 @@ the type of input_topic_.
     }
   }
 
-  void RelayNode::incoming_message_callback(std::shared_ptr<rclcpp::SerializedMessage> msg)
+  void RelayNode::republish_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
   {
     rclcpp::SerializedMessage msg_rcl = *msg.get();
     pub_->publish(msg_rcl);
