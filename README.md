@@ -14,20 +14,25 @@ Relay is ROS 2 node that subscribes to a topic and republishes all incoming data
 
 #### Usage
 
-```ros2 run relay <intopic> [outtopic]```
+```
+ros2 run relay <intopic> [outtopic]
+```
 
-Subscribe to ```intopic``` and republish to either
-- ```outtopic``` if specified
-- ```<intopic>_relay``` if not
+Subscribe to `intopic` and republish to either
+- `outtopic` if specified
+- `<intopic>_relay` if not
 
-E.g. rename ```base_scan``` to ```my_base_scan```:
-```ros2 run relay base_scan my_base_scan```
+E.g. rename `base_scan` to `my_base_scan`:
+
+```
+ros2 run relay base_scan my_base_scan
+```
 
 #### Parameters
 
-- ```input_topic``` (string) 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the same as if provided as a command line argument
-- ```output_topic``` (string, default=```<input_topic>_relay```) 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the same as if provided as a command line argument
-- ```lazy``` (bool, default=False)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If True, only subscribe to ```input_topic``` if there is at least one subscriber on the ```output_topic``` 
+- `input_topic` (string) 
+    - the same as if provided as a command line argument
+- `output_topic` (string, default=`<input_topic>_relay`) 
+    - the same as if provided as a command line argument
+- `lazy` (bool, default=False)
+    - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic` 
