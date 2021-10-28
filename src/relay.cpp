@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 
 namespace topic_tools
 {
@@ -27,7 +28,7 @@ namespace topic_tools
 class RelayNode : public rclcpp::Node
 {
 public:
-  RelayNode(const std::string node_name, const rclcpp::NodeOptions &options);
+  RelayNode(const std::string node_name, const rclcpp::NodeOptions & options);
 
 private:
   void republish_message(std::shared_ptr<rclcpp::SerializedMessage> msg);
@@ -49,49 +50,41 @@ private:
 };
 
 RelayNode::RelayNode(
-  const std::string node_name, const rclcpp::NodeOptions &options = rclcpp::NodeOptions()) 
-  : rclcpp::Node(node_name, options)
+  const std::string node_name, const rclcpp::NodeOptions & options = rclcpp::NodeOptions())
+: rclcpp::Node(node_name, options)
 {
   input_topic_ = declare_parameter<std::string>("input_topic");
   output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_relay");
   lazy_ = declare_parameter<bool>("lazy", false);
 
-  discovery_timer_ = this->create_wall_timer(discovery_period_, 
-                        std::bind(&RelayNode::make_subscribe_unsubscribe_decisions, this));
+  discovery_timer_ = this->create_wall_timer(
+    discovery_period_,
+    std::bind(&RelayNode::make_subscribe_unsubscribe_decisions, this));
 
   make_subscribe_unsubscribe_decisions();
 }
 
 void RelayNode::make_subscribe_unsubscribe_decisions()
 {
-
-  if (auto source_info = try_discover_source())
-  {
+  if (auto source_info = try_discover_source()) {
     // always relay same topic type and QoS profile as the first available source
-    if (*topic_type_ != source_info->first || *qos_profile_ != source_info->second)
-    {
+    if (*topic_type_ != source_info->first || *qos_profile_ != source_info->second) {
       topic_type_ = source_info->first;
       qos_profile_ = source_info->second;
       pub_ = this->create_generic_publisher(output_topic_, *topic_type_, *qos_profile_);
     }
 
     // at this point it is certain that our publisher exists
-    if (!lazy_ || pub_->get_subscription_count() > 0)
-    {
-      if (!sub_)
-      {
+    if (!lazy_ || pub_->get_subscription_count() > 0) {
+      if (!sub_) {
         sub_ = this->create_generic_subscription(
-          input_topic_, *topic_type_, *qos_profile_, 
+          input_topic_, *topic_type_, *qos_profile_,
           std::bind(&RelayNode::republish_message, this, std::placeholders::_1));
       }
-    } 
-    else
-    {
+    } else {
       sub_.reset();
     }
-  }
-  else
-  {
+  } else {
     // we don't have any source to republish, so we don't need a publisher
     // also, if the source topic type changes while it's offline this
     // prevents a crash due to mismatched topic types
@@ -104,40 +97,35 @@ std::optional<std::pair<std::string, rclcpp::QoS>> RelayNode::try_discover_sourc
 {
   auto publishers_info = this->get_publishers_info_by_topic(input_topic_);
   std::optional<rclcpp::QoS> qos_profile;
-  if (!publishers_info.empty()) 
-  {
+  if (!publishers_info.empty()) {
     return std::make_pair(publishers_info[0].topic_type(), publishers_info[0].qos_profile());
-  }
-  else
-  {
+  } else {
     return {};
   }
 }
 
 void RelayNode::republish_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
-  {
-    pub_->publish(*msg);
-  }
+{
+  pub_->publish(*msg);
+}
 
-} // namespace topic_tools
+}  // namespace topic_tools
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
 
   std::shared_ptr<topic_tools::RelayNode> node;
   auto options = rclcpp::NodeOptions();
 
-  if (argc >= 2 && strcmp(argv[1], "--ros-args"))
-  {
+  if (argc >= 2 && strcmp(argv[1], "--ros-args")) {
     options.append_parameter_override("input_topic", argv[1]);
-    if (argc >= 3 && strcmp(argv[2], "--ros-args"))
-    {
+    if (argc >= 3 && strcmp(argv[2], "--ros-args")) {
       options.append_parameter_override("output_topic", argv[2]);
     }
   }
   node = std::make_shared<topic_tools::RelayNode>("Relay", options);
-  
+
   rclcpp::spin(node);
   rclcpp::shutdown();
   return 0;
