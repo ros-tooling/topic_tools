@@ -8,4 +8,31 @@ The tools in this package are provided as composable ROS 2 component nodes, so t
 
 ## Components
 
-TBD
+### Relay
+
+Relay is ROS 2 node that subscribes to a topic and republishes all incoming data to another topic. It can work with any message type.
+
+#### Usage
+
+```
+ros2 run relay <intopic> [outtopic]
+```
+
+Subscribe to `intopic` and republish to either
+- `outtopic` if specified
+- `<intopic>_relay` if not
+
+E.g. rename `base_scan` to `my_base_scan`:
+
+```
+ros2 run relay base_scan my_base_scan
+```
+
+#### Parameters
+
+- `input_topic` (string) 
+    - the same as if provided as a command line argument
+- `output_topic` (string, default=`<input_topic>_relay`) 
+    - the same as if provided as a command line argument
+- `lazy` (bool, default=False)
+    - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic` 

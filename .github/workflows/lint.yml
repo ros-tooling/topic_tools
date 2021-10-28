@@ -15,6 +15,7 @@ jobs:
           linter:
             - copyright
             - xmllint
+            - lint_cmake
             - cppcheck
             - cpplint
             - uncrustify
