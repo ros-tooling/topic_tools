@@ -30,9 +30,9 @@ ros2 run relay base_scan my_base_scan
 
 #### Parameters
 
-- `input_topic` (string) 
+- `input_topic` (string)
     - the same as if provided as a command line argument
-- `output_topic` (string, default=`<input_topic>_relay`) 
+- `output_topic` (string, default=`<input_topic>_relay`)
     - the same as if provided as a command line argument
 - `lazy` (bool, default=False)
-    - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic` 
+    - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic`
