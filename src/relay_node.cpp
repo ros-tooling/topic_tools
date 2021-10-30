@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <memory>
-#include <optional>
+#include <optional> // NOLINT : https://github.com/ament/ament_lint/pull/324 
 #include <string>
 #include <utility>
 

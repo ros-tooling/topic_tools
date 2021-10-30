@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef TOPIC_TOOLS__RELAY_NODE_HPP_
+#define TOPIC_TOOLS__RELAY_NODE_HPP_
+
 #include <memory>
-#include <optional>
+#include <optional>  // NOLINT : https://github.com/ament/ament_lint/pull/324
 #include <string>
 #include <utility>
 
@@ -45,3 +48,5 @@ private:
   std::optional<rclcpp::QoS> qos_profile_;
 };
 }  // namespace topic_tools
+
+#endif  // TOPIC_TOOLS__RELAY_NODE_HPP_
