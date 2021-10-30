@@ -17,6 +17,8 @@ ament_auto_add_library(relay_node SHARED
   src/relay_node.cpp
 )
 
+rclcpp_components_register_nodes(relay_node "topic_tools::RelayNode")
+
 ament_auto_add_executable(relay
   src/relay.cpp
 )
