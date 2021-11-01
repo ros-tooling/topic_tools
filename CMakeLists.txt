@@ -10,23 +10,29 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # find dependencies
-find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
+ament_auto_find_build_dependencies()
 
-add_executable(relay src/relay.cpp)
-ament_target_dependencies(relay rclcpp)
+ament_auto_add_library(relay_node SHARED
+  src/relay_node.cpp
+)
 
-install(TARGETS
-  relay
-  DESTINATION lib/${PROJECT_NAME})
+rclcpp_components_register_nodes(relay_node "topic_tools::RelayNode")
 
-install(
-  DIRECTORY launch
-  DESTINATION share/${PROJECT_NAME})
+ament_auto_add_executable(relay
+  src/relay.cpp
+)
+
+target_link_libraries(relay
+  relay_node
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-ament_package()
+ament_auto_package(
+  INSTALL_TO_SHARE
+    launch
+)
