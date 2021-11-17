@@ -36,3 +36,8 @@ ament_auto_package(
   INSTALL_TO_SHARE
     launch
 )
+
+install(PROGRAMS
+  scripts/transform
+  DESTINATION lib/${PROJECT_NAME}
+)
