@@ -36,3 +36,22 @@ ros2 run relay base_scan my_base_scan
     - the same as if provided as a command line argument
 - `lazy` (bool, default=False)
     - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic`
+
+### Transform
+
+Transform is ROS 2 node that allows to take a topic or one of it fields and output it on another topic
+
+#### Usage
+
+```
+ros2 run topic_tools transform <input topic> <output topic> <output type> [<expression on m>] [--import <modules>] [--field <topic_field>]
+```
+
+Subscribe to `input topic` and convert topic content or its field into
+- `output topic` whose type is `output type` based on `expression on m`
+
+E.g. transform `imu` orientation to `norm`:
+
+```
+ros2 run topic_tools transform /imu --field orientation /norm std_msgs/Float64 'std_msgs.msg.Float64(data=numpy.sqrt(numpy.sum(numpy.array([m.x, m.y, m.z, m.w]))))' --import std_msgs numpy
+```
