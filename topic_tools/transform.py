@@ -16,6 +16,8 @@
 # limitations under the License.
 
 """
+Usage summary.
+
 @author: enriquefernandez, Daisuke Nishimatsu
 Allows to take a topic or one of it fields and output it on another topic
 after performing a valid python operation.
