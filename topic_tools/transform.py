@@ -29,6 +29,10 @@ $ ros2 run topic_tools transform /imu --field orientation /norm std_msgs/Float64
 $ ros2 run topic_tools transform /imu --field orientation /norm std_msgs/Float64 'std_msgs.msg.Float64(data=numpy.linalg.norm([m.x, m.y, m.z, m.w]))' --import std_msgs numpy # noqa: E501
 """
 
+import argparse
+import importlib
+import os
+import sys
 
 import rclpy
 from rclpy.node import Node
@@ -39,11 +43,6 @@ from rclpy.utilities import remove_ros_args
 from ros2topic.api import get_msg_class
 from ros2topic.api import qos_profile_from_short_keys
 from rosidl_runtime_py.utilities import get_message
-
-import argparse
-import importlib
-import os
-import sys
 
 
 class Transform(Node):
@@ -172,21 +171,21 @@ def main(argv=sys.argv[1:]):
         description='Apply a Python operation to a topic.\n\n'
                     'A node is created that subscribes to a topic,\n'
                     'applies a Python expression to the topic (or topic\n'
-                    'field) message \'m\', and publishes the result\n'
+                    'field) message \"m\", and publishes the result\n'
                     'through another topic.\n\n'
                     'Usage:\n\tros2 run topic_tools transform '
                     '<input topic> <output topic> <output type> '
                     '[<expression on m>] [--import numpy tf] [--field <topic_field>]\n\n'
                     'Example:\n\tros2 run topic_tools transform /imu --field orientation '
                     '/norm std_msgs/Float64'
-                    '\'std_msgs.msg.Float64(data=sqrt(sum(array([m.x, m.y, m.z, m.w]))))\''
+                    '\"std_msgs.msg.Float64(data=sqrt(sum(array([m.x, m.y, m.z, m.w]))))\"'
                     ' --import std_msgs')
     parser.add_argument('input', help='Input topic or topic field.')
     parser.add_argument('output_topic', help='Output topic.')
     parser.add_argument('output_type', help='Output topic type.')
     parser.add_argument(
         'expression', default='m',
-        help='Python expression to apply on the input message \'m\'.'
+        help='Python expression to apply on the input message \"m\".'
     )
     parser.add_argument(
         '-i', '--import', dest='modules', nargs='+', default=['numpy'],
