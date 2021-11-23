@@ -13,6 +13,13 @@ endif()
 find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
+ament_python_install_package(${PROJECT_NAME}
+  SETUP_CFG
+    ${PROJECT_NAME}/setup.cfg
+  SCRIPTS_DESTINATION
+    lib/${PROJECT_NAME}
+)
+
 ament_auto_add_library(relay_node SHARED
   src/relay_node.cpp
 )
