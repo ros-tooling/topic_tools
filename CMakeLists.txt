@@ -63,6 +63,20 @@ target_link_libraries(relay
   relay_node
 )
 
+ament_auto_add_library(throttle_node SHARED
+  src/throttle_node.cpp
+)
+
+rclcpp_components_register_nodes(throttle_node "topic_tools::ThrottleNode")
+
+ament_auto_add_executable(throttle
+  src/throttle.cpp
+)
+
+target_link_libraries(throttle
+  throttle_node
+)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
