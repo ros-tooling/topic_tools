@@ -24,9 +24,7 @@ namespace topic_tools
 {
 RelayNode::RelayNode(const rclcpp::NodeOptions & options)
 : ToolBaseNode("relay", options)
-{
-  output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_relay");
-}
+{}
 
 void RelayNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
 {

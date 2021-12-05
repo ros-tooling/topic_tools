@@ -26,6 +26,7 @@ ToolBaseNode::ToolBaseNode(const std::string & node_name, const rclcpp::NodeOpti
 : rclcpp::Node(node_name, options)
 {
   input_topic_ = declare_parameter<std::string>("input_topic");
+  output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_" + node_name);
   lazy_ = declare_parameter<bool>("lazy", false);
 
   discovery_timer_ = this->create_wall_timer(

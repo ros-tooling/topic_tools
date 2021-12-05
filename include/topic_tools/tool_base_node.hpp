@@ -40,13 +40,13 @@ private:
   std::chrono::duration<float> discovery_period_ = std::chrono::milliseconds{100};
   rclcpp::GenericSubscription::SharedPtr sub_;
   rclcpp::TimerBase::SharedPtr discovery_timer_;
+  std::string input_topic_;
+  std::string output_topic_;
   bool lazy_;
   std::optional<std::string> topic_type_;
   std::optional<rclcpp::QoS> qos_profile_;
 
 protected:
-  std::string input_topic_;
-  std::string output_topic_;
   rclcpp::GenericPublisher::SharedPtr pub_;
 };
 }  // namespace topic_tools

@@ -38,7 +38,6 @@ ThrottleNode::ThrottleNode(const rclcpp::NodeOptions & options)
     RCLCPP_ERROR(get_logger(), "Unknown throttle type");
     return;
   }
-  output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_throttle");
   use_wall_clock_ = declare_parameter("use_wall_clock", false);
   last_time_ = use_wall_clock_ ? rclcpp::Clock{}.now() : this->now();
 }
