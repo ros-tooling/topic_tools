@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <deque>
 #include <memory>
 #include <optional> // NOLINT : https://github.com/ament/ament_lint/pull/324
 #include <string>
@@ -54,6 +55,20 @@ void ThrottleNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> ms
     if ((now - last_time_).nanoseconds() >= period_.count()) {
       pub_->publish(*msg);
       last_time_ = now;
+    }
+  } else if (throttle_type_ == ThrottleType::BYTES) {
+    while (!sent_deque_.empty() && sent_deque_.front().first < now.seconds() - window_) {
+      sent_deque_.pop_front();
+    }
+    // sum up how many bytes are in the window
+    const auto bytes =
+      std::accumulate(
+      sent_deque_.begin(), sent_deque_.end(), 0, [](const auto a, const auto & b) {
+        return a + b.second;
+      });
+    if (bytes < bytes_per_sec_) {
+      pub_->publish(*msg);
+      sent_deque_.emplace_back(now.seconds(), msg->size());
     }
   }
 }

@@ -15,6 +15,7 @@
 #ifndef TOPIC_TOOLS__THROTTLE_NODE_HPP_
 #define TOPIC_TOOLS__THROTTLE_NODE_HPP_
 
+#include <deque>
 #include <memory>
 #include <optional>  // NOLINT : https://github.com/ament/ament_lint/pull/324
 #include <string>
@@ -27,6 +28,8 @@ namespace topic_tools
 {
 class ThrottleNode final : public ToolBaseNode
 {
+  using Sent = std::pair<double, uint32_t>;
+
 public:
   explicit ThrottleNode(const rclcpp::NodeOptions & options);
 
@@ -44,6 +47,7 @@ private:
   double window_;
   rclcpp::Time last_time_;
   bool use_wall_clock_;
+  std::deque<Sent> sent_deque_;
 };
 }  // namespace topic_tools
 
