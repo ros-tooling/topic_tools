@@ -26,8 +26,8 @@ int main(int argc, char * argv[])
     std::cout << "Throttle type is missing." << std::endl;
     return 0;
   }
-  if (args.at(1) == "message") {
-    options.append_parameter_override("throttle_type", "message");
+  if (args.at(1) == "messages") {
+    options.append_parameter_override("throttle_type", "messages");
     if (args.size() >= 4) {
       options.append_parameter_override("input_topic", args.at(2));
       options.append_parameter_override("msgs_per_sec", std::stod(args.at(3)));

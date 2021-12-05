@@ -35,7 +35,7 @@ private:
 
   enum class ThrottleType
   {
-    MESSAGE,
+    MESSAGES,
     BYTES,
   } throttle_type_;
   double msgs_per_sec_;

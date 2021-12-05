@@ -26,8 +26,8 @@ ThrottleNode::ThrottleNode(const rclcpp::NodeOptions & options)
 : ToolBaseNode("throttle", options)
 {
   const std::string throttle_type_str = declare_parameter<std::string>("throttle_type");
-  if (throttle_type_str == "message") {
-    throttle_type_ = ThrottleType::MESSAGE;
+  if (throttle_type_str == "messages") {
+    throttle_type_ = ThrottleType::MESSAGES;
     msgs_per_sec_ = declare_parameter<double>("msgs_per_sec");
     period_ = rclcpp::Rate(msgs_per_sec_).period();
   } else if (throttle_type_str == "bytes") {
@@ -43,7 +43,7 @@ ThrottleNode::ThrottleNode(const rclcpp::NodeOptions & options)
 
 void ThrottleNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
 {
-  if (throttle_type_ == ThrottleType::MESSAGE) {
+  if (throttle_type_ == ThrottleType::MESSAGES) {
     if (last_time_ > now()) {
       RCLCPP_WARN(
         get_logger(), "Detected jump back in time, resetting throttle period to now for.");
