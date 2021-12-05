@@ -39,19 +39,22 @@ ThrottleNode::ThrottleNode(const rclcpp::NodeOptions & options)
     return;
   }
   output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_throttle");
+  use_wall_clock_ = declare_parameter("use_wall_clock", false);
+  last_time_ = use_wall_clock_ ? rclcpp::Clock{}.now() : this->now();
 }
 
 void ThrottleNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
 {
+  const auto & now = use_wall_clock_ ? rclcpp::Clock{}.now() : this->now();
   if (throttle_type_ == ThrottleType::MESSAGES) {
-    if (last_time_ > now()) {
+    if (last_time_ > now) {
       RCLCPP_WARN(
         get_logger(), "Detected jump back in time, resetting throttle period to now for.");
-      last_time_ = now();
+      last_time_ = now;
     }
-    if ((now() - last_time_).nanoseconds() >= period_.count()) {
+    if ((now - last_time_).nanoseconds() >= period_.count()) {
       pub_->publish(*msg);
-      last_time_ = now();
+      last_time_ = now;
     }
   }
 }

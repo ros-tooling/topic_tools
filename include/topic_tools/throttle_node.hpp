@@ -43,6 +43,7 @@ private:
   int bytes_per_sec_;
   double window_;
   rclcpp::Time last_time_;
+  bool use_wall_clock_;
 };
 }  // namespace topic_tools
 
