@@ -23,7 +23,7 @@
 namespace topic_tools
 {
 ThrottleNode::ThrottleNode(const rclcpp::NodeOptions & options)
-: rclcpp::Node("throttle", options)
+: ToolBaseNode("throttle", options)
 {
   const std::string throttle_type_str = declare_parameter<std::string>("throttle_type");
   if (throttle_type_str == "message") {
@@ -38,59 +38,10 @@ ThrottleNode::ThrottleNode(const rclcpp::NodeOptions & options)
     RCLCPP_ERROR(get_logger(), "Unknown throttle type");
     return;
   }
-  input_topic_ = declare_parameter<std::string>("input_topic");
   output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_throttle");
-  lazy_ = declare_parameter<bool>("lazy", false);
-
-  discovery_timer_ = this->create_wall_timer(
-    discovery_period_,
-    std::bind(&ThrottleNode::make_subscribe_unsubscribe_decisions, this));
-
-  make_subscribe_unsubscribe_decisions();
 }
 
-void ThrottleNode::make_subscribe_unsubscribe_decisions()
-{
-  if (auto source_info = try_discover_source()) {
-    // always throttle same topic type and QoS profile as the first available source
-    if (*topic_type_ != source_info->first || *qos_profile_ != source_info->second) {
-      topic_type_ = source_info->first;
-      qos_profile_ = source_info->second;
-      pub_ = this->create_generic_publisher(output_topic_, *topic_type_, *qos_profile_);
-    }
-
-    // at this point it is certain that our publisher exists
-    if (!lazy_ || pub_->get_subscription_count() > 0) {
-      if (!sub_) {
-        sub_ = this->create_generic_subscription(
-          input_topic_, *topic_type_, *qos_profile_,
-          std::bind(&ThrottleNode::throttle_message, this, std::placeholders::_1));
-        last_time_ = now();
-      }
-    } else {
-      sub_.reset();
-    }
-  } else {
-    // we don't have any source to republish, so we don't need a publisher
-    // also, if the source topic type changes while it's offline this
-    // prevents a crash due to mismatched topic types
-    pub_.reset();
-  }
-}
-
-
-std::optional<std::pair<std::string, rclcpp::QoS>> ThrottleNode::try_discover_source()
-{
-  auto publishers_info = this->get_publishers_info_by_topic(input_topic_);
-  std::optional<rclcpp::QoS> qos_profile;
-  if (!publishers_info.empty()) {
-    return std::make_pair(publishers_info[0].topic_type(), publishers_info[0].qos_profile());
-  } else {
-    return {};
-  }
-}
-
-void ThrottleNode::throttle_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
+void ThrottleNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
 {
   if (throttle_type_ == ThrottleType::MESSAGE) {
     if (last_time_ > now()) {

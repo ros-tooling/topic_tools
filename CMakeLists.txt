@@ -51,6 +51,7 @@ endif()
 
 ament_auto_add_library(relay_node SHARED
   src/relay_node.cpp
+  src/tool_base_node.cpp
 )
 
 rclcpp_components_register_nodes(relay_node "topic_tools::RelayNode")
@@ -65,6 +66,7 @@ target_link_libraries(relay
 
 ament_auto_add_library(throttle_node SHARED
   src/throttle_node.cpp
+  src/tool_base_node.cpp
 )
 
 rclcpp_components_register_nodes(throttle_node "topic_tools::ThrottleNode")

@@ -21,37 +21,23 @@
 #include <utility>
 
 #include "rclcpp/rclcpp.hpp"
+#include "topic_tools/tool_base_node.hpp"
 
 namespace topic_tools
 {
-
-class ThrottleNode : public rclcpp::Node
+class ThrottleNode final : public ToolBaseNode
 {
 public:
   explicit ThrottleNode(const rclcpp::NodeOptions & options);
 
 private:
-  void throttle_message(std::shared_ptr<rclcpp::SerializedMessage> msg);
-  void make_subscribe_unsubscribe_decisions();
+  void process_message(std::shared_ptr<rclcpp::SerializedMessage> msg) override;
 
-  /// Returns an optional pair <topic type, QoS profile> of the first found source publishing
-  /// on `input_topic_` if at least one source is found
-  std::optional<std::pair<std::string, rclcpp::QoS>> try_discover_source();
-
-  std::chrono::duration<float> discovery_period_ = std::chrono::milliseconds{100};
-  rclcpp::GenericSubscription::SharedPtr sub_;
-  rclcpp::GenericPublisher::SharedPtr pub_;
-  rclcpp::TimerBase::SharedPtr discovery_timer_;
   enum class ThrottleType
   {
     MESSAGE,
     BYTES,
   } throttle_type_;
-  std::string input_topic_;
-  std::string output_topic_;
-  bool lazy_;
-  std::optional<std::string> topic_type_;
-  std::optional<rclcpp::QoS> qos_profile_;
   double msgs_per_sec_;
   std::chrono::nanoseconds period_;
   int bytes_per_sec_;
