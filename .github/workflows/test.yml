@@ -28,7 +28,7 @@ jobs:
               ]
             }
           }
-    - uses: actions/upload-artifact@v2.2.4
+    - uses: actions/upload-artifact@v2.3.0
       with:
         name: colcon-logs
         path: ros_ws/log
