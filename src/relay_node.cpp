@@ -23,60 +23,10 @@
 namespace topic_tools
 {
 RelayNode::RelayNode(const rclcpp::NodeOptions & options)
-: rclcpp::Node("relay", options)
-{
-  input_topic_ = declare_parameter<std::string>("input_topic");
-  output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_relay");
-  lazy_ = declare_parameter<bool>("lazy", false);
+: ToolBaseNode("relay", options)
+{}
 
-  discovery_timer_ = this->create_wall_timer(
-    discovery_period_,
-    std::bind(&RelayNode::make_subscribe_unsubscribe_decisions, this));
-
-  make_subscribe_unsubscribe_decisions();
-}
-
-void RelayNode::make_subscribe_unsubscribe_decisions()
-{
-  if (auto source_info = try_discover_source()) {
-    // always relay same topic type and QoS profile as the first available source
-    if (*topic_type_ != source_info->first || *qos_profile_ != source_info->second) {
-      topic_type_ = source_info->first;
-      qos_profile_ = source_info->second;
-      pub_ = this->create_generic_publisher(output_topic_, *topic_type_, *qos_profile_);
-    }
-
-    // at this point it is certain that our publisher exists
-    if (!lazy_ || pub_->get_subscription_count() > 0) {
-      if (!sub_) {
-        sub_ = this->create_generic_subscription(
-          input_topic_, *topic_type_, *qos_profile_,
-          std::bind(&RelayNode::republish_message, this, std::placeholders::_1));
-      }
-    } else {
-      sub_.reset();
-    }
-  } else {
-    // we don't have any source to republish, so we don't need a publisher
-    // also, if the source topic type changes while it's offline this
-    // prevents a crash due to mismatched topic types
-    pub_.reset();
-  }
-}
-
-
-std::optional<std::pair<std::string, rclcpp::QoS>> RelayNode::try_discover_source()
-{
-  auto publishers_info = this->get_publishers_info_by_topic(input_topic_);
-  std::optional<rclcpp::QoS> qos_profile;
-  if (!publishers_info.empty()) {
-    return std::make_pair(publishers_info[0].topic_type(), publishers_info[0].qos_profile());
-  } else {
-    return {};
-  }
-}
-
-void RelayNode::republish_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
+void RelayNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
 {
   pub_->publish(*msg);
 }
