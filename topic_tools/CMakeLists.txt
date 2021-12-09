@@ -13,41 +13,12 @@ endif()
 find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
-if(${ament_cmake_python_VERSION} VERSION_GREATER_EQUAL 1.2.0)
-  ament_python_install_package(${PROJECT_NAME}
-    SETUP_CFG
-      ${PROJECT_NAME}/setup.cfg
-    SCRIPTS_DESTINATION
-      lib/${PROJECT_NAME}
-  )
-else()
-  ament_python_install_package(${PROJECT_NAME}
-    SETUP_CFG
-      ${PROJECT_NAME}/setup.cfg
-  )
-
-  set(build_dir "${CMAKE_CURRENT_BINARY_DIR}/ament_cmake_python/${PROJECT_NAME}")
-
-  file(MAKE_DIRECTORY "${build_dir}/scripts")  # setup.py may or may not create it
-
-  add_custom_target(
-    ament_cmake_python_build_${PROJECT_NAME}_scripts ALL
-    COMMAND ${PYTHON_EXECUTABLE} setup.py install_scripts -d scripts
-    WORKING_DIRECTORY "${build_dir}"
-    DEPENDS ${egg_dependencies}
-  )
-
-  if(NOT AMENT_CMAKE_SYMLINK_INSTALL)
-    # Not needed for nor supported by symlink installs
-    set(_extra_install_args USE_SOURCE_PERMISSIONS)
-  endif()
-
-  install(
-    DIRECTORY "${build_dir}/scripts/"
-    DESTINATION "lib/${PROJECT_NAME}/"
-    ${_extra_install_args}
-  )
-endif()
+ament_python_install_package(${PROJECT_NAME}
+  SETUP_CFG
+    ${PROJECT_NAME}/setup.cfg
+  SCRIPTS_DESTINATION
+    lib/${PROJECT_NAME}
+)
 
 ament_auto_add_library(relay_node SHARED
   src/relay_node.cpp
