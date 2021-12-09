@@ -79,6 +79,21 @@ target_link_libraries(throttle
   throttle_node
 )
 
+ament_auto_add_library(drop_node SHARED
+  src/drop_node.cpp
+  src/tool_base_node.cpp
+)
+
+rclcpp_components_register_nodes(drop_node "topic_tools::DropNode")
+
+ament_auto_add_executable(drop
+  src/drop.cpp
+)
+
+target_link_libraries(drop
+  drop_node
+)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
