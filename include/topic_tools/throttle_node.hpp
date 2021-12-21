@@ -36,6 +36,7 @@ public:
   explicit ThrottleNode(const rclcpp::NodeOptions & options);
 
 private:
+  void initialize() override;
   void process_message(std::shared_ptr<rclcpp::SerializedMessage> msg) override;
 
   enum class ThrottleType

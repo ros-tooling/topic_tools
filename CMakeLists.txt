@@ -49,6 +49,13 @@ else()
   )
 endif()
 
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "srv/MuxAdd.srv"
+  "srv/MuxDelete.srv"
+  "srv/MuxList.srv"
+  "srv/MuxSelect.srv"
+)
+
 ament_auto_add_library(relay_node SHARED
   src/relay_node.cpp
   src/tool_base_node.cpp
@@ -95,6 +102,29 @@ ament_auto_add_executable(drop
 
 target_link_libraries(drop
   drop_node
+)
+
+ament_auto_add_library(mux_node SHARED
+  src/mux_node.cpp
+  src/tool_base_node.cpp
+)
+
+if(${rosidl_cmake_VERSION} VERSION_GREATER_EQUAL 2.5.0)
+  rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
+  target_link_libraries(mux_node "${cpp_typesupport_target}")
+else()
+  rosidl_target_interfaces(mux_node
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+endif()
+
+rclcpp_components_register_nodes(mux_node "topic_tools::MuxNode")
+
+ament_auto_add_executable(mux
+  src/mux.cpp
+)
+
+target_link_libraries(mux
+  mux_node
 )
 
 if(BUILD_TESTING)

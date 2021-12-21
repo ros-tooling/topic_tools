@@ -12,34 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef TOPIC_TOOLS__DROP_NODE_HPP_
-#define TOPIC_TOOLS__DROP_NODE_HPP_
-
 #include <memory>
-#include <optional>  // NOLINT : https://github.com/ament/ament_lint/pull/324
 #include <string>
-#include <utility>
+#include <vector>
 
 #include "rclcpp/rclcpp.hpp"
-#include "topic_tools/tool_base_node.hpp"
-#include "topic_tools/visibility_control.h"
+#include "topic_tools/mux_node.hpp"
 
-namespace topic_tools
+int main(int argc, char * argv[])
 {
-class DropNode final : public ToolBaseNode
-{
-public:
-  TOPIC_TOOLS_PUBLIC
-  explicit DropNode(const rclcpp::NodeOptions & options);
+  auto args = rclcpp::init_and_remove_ros_arguments(argc, argv);
+  auto options = rclcpp::NodeOptions{};
 
-private:
-  void initialize() override;
-  void process_message(std::shared_ptr<rclcpp::SerializedMessage> msg) override;
+  if (args.size() >= 3) {
+    options.append_parameter_override("output_topic", args.at(1));
+    options.append_parameter_override(
+      "input_topics",
+      std::vector<std::string>{args.begin() + 2, args.end()});
+  }
 
-  int x_;
-  int y_;
-  int count_{0};
-};
-}  // namespace topic_tools
+  auto node = std::make_shared<topic_tools::MuxNode>(options);
 
-#endif  // TOPIC_TOOLS__DROP_NODE_HPP_
+  rclcpp::spin(node);
+  rclcpp::shutdown();
+  return 0;
+}
