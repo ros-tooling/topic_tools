@@ -32,6 +32,7 @@ public:
   ToolBaseNode(const std::string & node_name, const rclcpp::NodeOptions & options);
 
 protected:
+  /// Initialize ros parameters, publishers, subscribers and services of each derived node.
   virtual void initialize() = 0;
   virtual void process_message(std::shared_ptr<rclcpp::SerializedMessage> msg) = 0;
 
