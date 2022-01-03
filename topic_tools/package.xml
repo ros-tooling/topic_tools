@@ -14,6 +14,7 @@
 
   <depend>rclcpp</depend>
   <depend>rclcpp_components</depend>
+  <depend>topic_tools_interfaces</depend>
 
   <exec_depend>rclpy</exec_depend>
   <exec_depend>ros2cli</exec_depend>

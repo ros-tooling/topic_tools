@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: ros-tooling/action-ros-ci@v0.2
       with:
-        package-name: topic_tools
+        package-name: topic_tools topic_tools_interfaces
         target-ros2-distro: rolling
         vcs-repo-file-url: https://raw.githubusercontent.com/ros2/ros2/master/ros2.repos
         colcon-defaults: |

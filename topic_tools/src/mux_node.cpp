@@ -48,13 +48,13 @@ void MuxNode::initialize()
 
   make_subscribe_unsubscribe_decisions();
 
-  mux_add_srv_ = create_service<topic_tools::srv::MuxAdd>(
+  mux_add_srv_ = create_service<topic_tools_interfaces::srv::MuxAdd>(
     "~/add", std::bind(&MuxNode::on_mux_add, this, _1, _2));
-  mux_delete_srv_ = create_service<topic_tools::srv::MuxDelete>(
+  mux_delete_srv_ = create_service<topic_tools_interfaces::srv::MuxDelete>(
     "~/delete", std::bind(&MuxNode::on_mux_delete, this, _1, _2));
-  mux_list_srv_ = create_service<topic_tools::srv::MuxList>(
+  mux_list_srv_ = create_service<topic_tools_interfaces::srv::MuxList>(
     "~/list", std::bind(&MuxNode::on_mux_list, this, _1, _2));
-  mux_select_srv_ = create_service<topic_tools::srv::MuxSelect>(
+  mux_select_srv_ = create_service<topic_tools_interfaces::srv::MuxSelect>(
     "~/select", std::bind(&MuxNode::on_mux_select, this, _1, _2));
 }
 
@@ -73,8 +73,8 @@ void MuxNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
 }
 
 void MuxNode::on_mux_add(
-  const std::shared_ptr<topic_tools::srv::MuxAdd::Request> request,
-  std::shared_ptr<topic_tools::srv::MuxAdd::Response> response)
+  const std::shared_ptr<topic_tools_interfaces::srv::MuxAdd::Request> request,
+  std::shared_ptr<topic_tools_interfaces::srv::MuxAdd::Response> response)
 {
   RCLCPP_INFO(get_logger(), "trying to add %s to mux", request->topic.c_str());
 
@@ -105,8 +105,8 @@ void MuxNode::on_mux_add(
 }
 
 void MuxNode::on_mux_delete(
-  const std::shared_ptr<topic_tools::srv::MuxDelete::Request> request,
-  std::shared_ptr<topic_tools::srv::MuxDelete::Response> response)
+  const std::shared_ptr<topic_tools_interfaces::srv::MuxDelete::Request> request,
+  std::shared_ptr<topic_tools_interfaces::srv::MuxDelete::Response> response)
 {
   RCLCPP_INFO(get_logger(), "trying to delete %s to mux", request->topic.c_str());
 
@@ -140,15 +140,15 @@ void MuxNode::on_mux_delete(
 }
 
 void MuxNode::on_mux_list(
-  [[maybe_unused]] const std::shared_ptr<topic_tools::srv::MuxList::Request> request,
-  std::shared_ptr<topic_tools::srv::MuxList::Response> response)
+  [[maybe_unused]] const std::shared_ptr<topic_tools_interfaces::srv::MuxList::Request> request,
+  std::shared_ptr<topic_tools_interfaces::srv::MuxList::Response> response)
 {
   response->topics = input_topics_;
 }
 
 void MuxNode::on_mux_select(
-  const std::shared_ptr<topic_tools::srv::MuxSelect::Request> request,
-  std::shared_ptr<topic_tools::srv::MuxSelect::Response> response)
+  const std::shared_ptr<topic_tools_interfaces::srv::MuxSelect::Request> request,
+  std::shared_ptr<topic_tools_interfaces::srv::MuxSelect::Response> response)
 {
   auto it = std::find_if(
     input_topics_.begin(), input_topics_.end(),
