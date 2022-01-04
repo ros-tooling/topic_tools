@@ -38,7 +38,9 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
     }
 
     // at this point it is certain that our publisher exists
-    if (!lazy_ || pub_->get_subscription_count() > 0) {
+    if (!lazy_ ||
+      pub_->get_subscription_count() + pub_->get_intra_process_subscription_count() > 0)
+    {
       if (!sub_) {
         sub_ = this->create_generic_subscription(
           input_topic_, *topic_type_, *qos_profile_,
