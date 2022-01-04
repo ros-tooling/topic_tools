@@ -38,7 +38,6 @@ public:
   explicit MuxNode(const rclcpp::NodeOptions & options);
 
 private:
-  void initialize() override;
   void process_message(std::shared_ptr<rclcpp::SerializedMessage> msg) override;
   void make_subscribe_unsubscribe_decisions() override;
   void on_mux_add(

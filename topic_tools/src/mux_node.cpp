@@ -26,11 +26,6 @@ namespace topic_tools
 MuxNode::MuxNode(const rclcpp::NodeOptions & options)
 : ToolBaseNode("mux", options)
 {
-  initialize();
-}
-
-void MuxNode::initialize()
-{
   using std::placeholders::_1;
   using std::placeholders::_2;
 

@@ -26,11 +26,6 @@ namespace topic_tools
 ThrottleNode::ThrottleNode(const rclcpp::NodeOptions & options)
 : ToolBaseNode("throttle", options)
 {
-  initialize();
-}
-
-void ThrottleNode::initialize()
-{
   input_topic_ = declare_parameter<std::string>("input_topic");
   output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_throttle");
   lazy_ = declare_parameter<bool>("lazy", false);
