@@ -22,12 +22,14 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "topic_tools/tool_base_node.hpp"
+#include "visibility_control.h"
 
 namespace topic_tools
 {
 class DropNode final : public ToolBaseNode
 {
 public:
+  TOPIC_TOOLS_PUBLIC
   explicit DropNode(const rclcpp::NodeOptions & options);
 
 private:

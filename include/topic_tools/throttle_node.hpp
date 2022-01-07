@@ -23,6 +23,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "topic_tools/tool_base_node.hpp"
+#include "visibility_control.h"
 
 namespace topic_tools
 {
@@ -31,6 +32,7 @@ class ThrottleNode final : public ToolBaseNode
   using Sent = std::pair<double, uint32_t>;
 
 public:
+  TOPIC_TOOLS_PUBLIC
   explicit ThrottleNode(const rclcpp::NodeOptions & options);
 
 private:

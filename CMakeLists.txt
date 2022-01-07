@@ -53,6 +53,7 @@ ament_auto_add_library(relay_node SHARED
   src/relay_node.cpp
   src/tool_base_node.cpp
 )
+target_compile_definitions(relay_node PRIVATE "TOPIC_TOOLS_BUILDING_LIBRARY")
 
 rclcpp_components_register_nodes(relay_node "topic_tools::RelayNode")
 
@@ -68,6 +69,7 @@ ament_auto_add_library(throttle_node SHARED
   src/throttle_node.cpp
   src/tool_base_node.cpp
 )
+target_compile_definitions(throttle_node PRIVATE "TOPIC_TOOLS_BUILDING_LIBRARY")
 
 rclcpp_components_register_nodes(throttle_node "topic_tools::ThrottleNode")
 
@@ -83,6 +85,7 @@ ament_auto_add_library(drop_node SHARED
   src/drop_node.cpp
   src/tool_base_node.cpp
 )
+target_compile_definitions(drop_node PRIVATE "TOPIC_TOOLS_BUILDING_LIBRARY")
 
 rclcpp_components_register_nodes(drop_node "topic_tools::DropNode")
 

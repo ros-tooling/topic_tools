@@ -21,12 +21,14 @@
 #include <utility>
 
 #include "rclcpp/rclcpp.hpp"
+#include "visibility_control.h"
 
 namespace topic_tools
 {
 class ToolBaseNode : public rclcpp::Node
 {
 public:
+  TOPIC_TOOLS_PUBLIC
   ToolBaseNode(const std::string & node_name, const rclcpp::NodeOptions & options);
 
 private:
