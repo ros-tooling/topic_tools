@@ -22,7 +22,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "topic_tools/tool_base_node.hpp"
-#include "visibility_control.h"
+#include "topic_tools/visibility_control.h"
 
 namespace topic_tools
 {

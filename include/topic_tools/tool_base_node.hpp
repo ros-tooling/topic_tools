@@ -21,7 +21,7 @@
 #include <utility>
 
 #include "rclcpp/rclcpp.hpp"
-#include "visibility_control.h"
+#include "topic_tools/visibility_control.h"
 
 namespace topic_tools
 {
