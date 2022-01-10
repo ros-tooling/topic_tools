@@ -35,6 +35,7 @@ static const char NONE_TOPIC[] = "__none";
 class MuxNode final : public ToolBaseNode
 {
 public:
+  TOPIC_TOOLS_PUBLIC
   explicit MuxNode(const rclcpp::NodeOptions & options);
 
 private:

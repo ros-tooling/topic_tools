@@ -101,6 +101,7 @@ ament_auto_add_library(mux_node SHARED
   src/mux_node.cpp
   src/tool_base_node.cpp
 )
+target_compile_definitions(mux_node PRIVATE "TOPIC_TOOLS_BUILDING_LIBRARY")
 
 rclcpp_components_register_nodes(mux_node "topic_tools::MuxNode")
 
