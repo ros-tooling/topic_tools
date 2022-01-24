@@ -190,3 +190,36 @@ ros2 run topic_tools topic_tools mux sel_cmdvel auto_cmdvel joystick_cmdvel
     - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic`
 - `initial_topic` (str)
     - Input topic to select on startup. If __none, start with no input topic. If unset, default to first topic in arguments
+
+### Delay
+
+Delay is a ROS 2 node that can subscribe to a topic and republish incoming data to another topic, delaying the message by a fixed duration.
+It's useful to simulate computational results with high latency.
+
+#### Usage
+
+```
+ros2 run topic_tools delay <intopic> <delay> [outtopic]
+```
+
+Subscribe to <intopic> and republish on <outtopic> delayed by <delay>.
+- `intopic`: Incoming topic to subscribe to
+- `delay`: delay in seconds
+- `outtopic`: Outgoing topic to publish on (default: intopic_delay)
+
+E.g. delay messages published to base_scan by 500ms:
+
+```
+ros2 run topic_tools delay base_scan 0.5
+```
+
+#### Parameters
+
+- `input_topic` (string)
+    - the same as if provided as a command line argument
+- `output_topic` (string, default=`<input_topic>_delay`)
+    - the same as if provided as a command line argument
+- `lazy` (bool, default=False)
+    - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic`
+- `delay` (double)
+    - delay in seconds

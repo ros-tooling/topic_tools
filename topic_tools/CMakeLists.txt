@@ -84,6 +84,22 @@ target_link_libraries(mux
   mux_node
 )
 
+ament_auto_add_library(delay_node SHARED
+  src/delay_node.cpp
+  src/tool_base_node.cpp
+)
+target_compile_definitions(delay_node PRIVATE "TOPIC_TOOLS_BUILDING_LIBRARY")
+
+rclcpp_components_register_nodes(delay_node "topic_tools::DelayNode")
+
+ament_auto_add_executable(delay
+  src/delay.cpp
+)
+
+target_link_libraries(delay
+  delay_node
+)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
