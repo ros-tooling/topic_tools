@@ -1,4 +1,4 @@
-// Copyright 2021 Daisuke Nishimatsu
+// Copyright 2021 Mateusz Lichota
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,29 +18,30 @@
 #include <utility>
 
 #include "rclcpp/rclcpp.hpp"
-#include "topic_tools/drop_node.hpp"
+#include "topic_tools/relay_node.hpp"
 
 namespace topic_tools
 {
-DropNode::DropNode(const rclcpp::NodeOptions & options)
-: ToolBaseNode("drop", options)
+RelayNode::RelayNode(const rclcpp::NodeOptions & options)
+: ToolBaseNode("relay", options)
 {
-  x_ = declare_parameter<int>("X");
-  y_ = declare_parameter<int>("Y");
+  input_topic_ = declare_parameter<std::string>("input_topic");
+  output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_relay");
+  lazy_ = declare_parameter<bool>("lazy", false);
+
+  discovery_timer_ = this->create_wall_timer(
+    discovery_period_,
+    std::bind(&RelayNode::make_subscribe_unsubscribe_decisions, this));
+
+  make_subscribe_unsubscribe_decisions();
 }
 
-void DropNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
+void RelayNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
 {
-  if (count_ >= x_) {
-    pub_->publish(*msg);
-  }
-  ++count_;
-  if (count_ >= y_) {
-    count_ = 0;
-  }
+  pub_->publish(*msg);
 }
 
 }  // namespace topic_tools
 
 #include "rclcpp_components/register_node_macro.hpp"
-RCLCPP_COMPONENTS_REGISTER_NODE(topic_tools::DropNode)
+RCLCPP_COMPONENTS_REGISTER_NODE(topic_tools::RelayNode)

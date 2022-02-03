@@ -1,4 +1,4 @@
-// Copyright 2021 Mateusz Lichota
+// Copyright 2021 Daisuke Nishimatsu
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,25 +13,27 @@
 // limitations under the License.
 
 #include <memory>
-#include <optional> // NOLINT : https://github.com/ament/ament_lint/pull/324
 #include <string>
-#include <utility>
+#include <vector>
 
 #include "rclcpp/rclcpp.hpp"
-#include "topic_tools/relay_node.hpp"
+#include "topic_tools/mux_node.hpp"
 
-namespace topic_tools
+int main(int argc, char * argv[])
 {
-RelayNode::RelayNode(const rclcpp::NodeOptions & options)
-: ToolBaseNode("relay", options)
-{}
+  auto args = rclcpp::init_and_remove_ros_arguments(argc, argv);
+  auto options = rclcpp::NodeOptions{};
 
-void RelayNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
-{
-  pub_->publish(*msg);
+  if (args.size() >= 3) {
+    options.append_parameter_override("output_topic", args.at(1));
+    options.append_parameter_override(
+      "input_topics",
+      std::vector<std::string>{args.begin() + 2, args.end()});
+  }
+
+  auto node = std::make_shared<topic_tools::MuxNode>(options);
+
+  rclcpp::spin(node);
+  rclcpp::shutdown();
+  return 0;
 }
-
-}  // namespace topic_tools
-
-#include "rclcpp_components/register_node_macro.hpp"
-RCLCPP_COMPONENTS_REGISTER_NODE(topic_tools::RelayNode)

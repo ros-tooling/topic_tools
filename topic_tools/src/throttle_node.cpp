@@ -26,6 +26,10 @@ namespace topic_tools
 ThrottleNode::ThrottleNode(const rclcpp::NodeOptions & options)
 : ToolBaseNode("throttle", options)
 {
+  input_topic_ = declare_parameter<std::string>("input_topic");
+  output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_throttle");
+  lazy_ = declare_parameter<bool>("lazy", false);
+
   const std::string throttle_type_str = declare_parameter<std::string>("throttle_type");
   if (throttle_type_str == "messages") {
     throttle_type_ = ThrottleType::MESSAGES;
@@ -41,6 +45,12 @@ ThrottleNode::ThrottleNode(const rclcpp::NodeOptions & options)
   }
   use_wall_clock_ = declare_parameter("use_wall_clock", false);
   last_time_ = use_wall_clock_ ? rclcpp::Clock{}.now() : this->now();
+
+  discovery_timer_ = this->create_wall_timer(
+    discovery_period_,
+    std::bind(&ThrottleNode::make_subscribe_unsubscribe_decisions, this));
+
+  make_subscribe_unsubscribe_decisions();
 }
 
 void ThrottleNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)

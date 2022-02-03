@@ -27,4 +27,4 @@ jobs:
       with:
         linter: ${{ matrix.linter }}
         distribution: rolling
-        package-name: topic_tools
+        package-name: topic_tools topic_tools_interfaces

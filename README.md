@@ -139,3 +139,36 @@ ros2 run topic_tools drop base_scan 1 2
     - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic`
 - `X`, `Y` (int)
     - drop X out of every Y incoming messages
+
+### Mux
+
+mux is a ROS2 node that subscribes to a set of incoming topics and republishes incoming data from one of them to another topic,
+i.e., it's a multiplexer that switches an output among 1 of N inputs. Services are offered to switch among input topics,
+and to add and delete input topics. At startup, the first input topic on the command line is selected.
+
+#### Usage
+
+```
+ros2 run topic_tools mux <outopic> <intopic1> [intopic2...]
+```
+
+Subscribe to <intopic1>...N and publish currently selected topic to outopic. mux will start with <intopic1> selected.
+- `outtopic`: Outgoing topic to publish on
+- `intopicN`: Incoming topic to subscribe to
+
+E.g. mux two command streams (auto_cmdvel and joystick_cmdvel) into one (sel_cmdvel):
+
+```
+ros2 run topic_tools topic_tools mux sel_cmdvel auto_cmdvel joystick_cmdvel
+```
+
+#### Parameters
+
+- `input_topics` (string array)
+    - the same as if provided as a command line argument
+- `output_topic` (string, default=`~/selected`)
+    - the same as if provided as a command line argument
+- `lazy` (bool, default=False)
+    - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic`
+- `initial_topic` (str)
+    - Input topic to select on startup. If __none, start with no input topic. If unset, default to first topic in arguments

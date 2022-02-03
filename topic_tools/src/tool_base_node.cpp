@@ -25,29 +25,22 @@ namespace topic_tools
 ToolBaseNode::ToolBaseNode(const std::string & node_name, const rclcpp::NodeOptions & options)
 : rclcpp::Node(node_name, options)
 {
-  input_topic_ = declare_parameter<std::string>("input_topic");
-  output_topic_ = declare_parameter<std::string>("output_topic", input_topic_ + "_" + node_name);
-  lazy_ = declare_parameter<bool>("lazy", false);
-
-  discovery_timer_ = this->create_wall_timer(
-    discovery_period_,
-    std::bind(&ToolBaseNode::make_subscribe_unsubscribe_decisions, this));
-
-  make_subscribe_unsubscribe_decisions();
 }
 
 void ToolBaseNode::make_subscribe_unsubscribe_decisions()
 {
   if (auto source_info = try_discover_source()) {
     // always relay same topic type and QoS profile as the first available source
-    if (*topic_type_ != source_info->first || *qos_profile_ != source_info->second) {
+    if (*topic_type_ != source_info->first || *qos_profile_ != source_info->second || !pub_) {
       topic_type_ = source_info->first;
       qos_profile_ = source_info->second;
       pub_ = this->create_generic_publisher(output_topic_, *topic_type_, *qos_profile_);
     }
 
     // at this point it is certain that our publisher exists
-    if (!lazy_ || pub_->get_subscription_count() > 0) {
+    if (!lazy_ ||
+      pub_->get_subscription_count() + pub_->get_intra_process_subscription_count() > 0)
+    {
       if (!sub_) {
         sub_ = this->create_generic_subscription(
           input_topic_, *topic_type_, *qos_profile_,

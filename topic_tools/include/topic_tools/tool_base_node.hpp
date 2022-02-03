@@ -31,25 +31,23 @@ public:
   TOPIC_TOOLS_PUBLIC
   ToolBaseNode(const std::string & node_name, const rclcpp::NodeOptions & options);
 
-private:
+protected:
   virtual void process_message(std::shared_ptr<rclcpp::SerializedMessage> msg) = 0;
-  void make_subscribe_unsubscribe_decisions();
 
   /// Returns an optional pair <topic type, QoS profile> of the first found source publishing
   /// on `input_topic_` if at least one source is found
   std::optional<std::pair<std::string, rclcpp::QoS>> try_discover_source();
+  virtual void make_subscribe_unsubscribe_decisions();
 
   std::chrono::duration<float> discovery_period_ = std::chrono::milliseconds{100};
-  rclcpp::GenericSubscription::SharedPtr sub_;
-  rclcpp::TimerBase::SharedPtr discovery_timer_;
+  std::optional<std::string> topic_type_;
+  std::optional<rclcpp::QoS> qos_profile_;
   std::string input_topic_;
   std::string output_topic_;
   bool lazy_;
-  std::optional<std::string> topic_type_;
-  std::optional<rclcpp::QoS> qos_profile_;
-
-protected:
+  rclcpp::TimerBase::SharedPtr discovery_timer_;
   rclcpp::GenericPublisher::SharedPtr pub_;
+  rclcpp::GenericSubscription::SharedPtr sub_;
 };
 }  // namespace topic_tools
 
