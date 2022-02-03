@@ -59,9 +59,8 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
 
 std::optional<std::pair<std::string, rclcpp::QoS>> ToolBaseNode::try_discover_source()
 {
-  // borrowed this from domain bridge 
+  // borrowed this from domain bridge
   // (https://github.com/ros2/domain_bridge/blob/main/src/domain_bridge/wait_for_graph_events.hpp)
-  
   // Query QoS info for publishers
   std::vector<rclcpp::TopicEndpointInfo> endpoint_info_vec =
     this->get_publishers_info_by_topic(input_topic_);
@@ -107,18 +106,20 @@ std::optional<std::pair<std::string, rclcpp::QoS>> ToolBaseNode::try_discover_so
   // and print a warning
   if (reliable_count > 0u && reliable_count != num_endpoints) {
     qos.best_effort();
-    RCLCPP_WARN(this->get_logger(), "Some, but not all, publishers on topic %s "
+    RCLCPP_WARN(
+      this->get_logger(), "Some, but not all, publishers on topic %s "
       "offer 'reliable' reliability. Falling back to 'best effort' reliability in order"
-      "to connect to all publishers.",input_topic_.c_str());
+      "to connect to all publishers.", input_topic_.c_str());
   }
 
   // If not all publishers have a "transient local" policy, then use a "volatile" policy
   // and print a warning
   if (transient_local_count > 0u && transient_local_count != num_endpoints) {
     qos.durability_volatile();
-    RCLCPP_WARN(this->get_logger(), "Some, but not all, publishers on topic %s "
+    RCLCPP_WARN(
+      this->get_logger(), "Some, but not all, publishers on topic %s "
       "offer 'transient local' durability. Falling back to 'volatile' durability in order"
-      "to connect to all publishers.",input_topic_.c_str());
+      "to connect to all publishers.", input_topic_.c_str());
   }
 
   qos.deadline(max_deadline);
