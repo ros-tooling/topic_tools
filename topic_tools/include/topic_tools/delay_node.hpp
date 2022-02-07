@@ -15,7 +15,7 @@
 #ifndef TOPIC_TOOLS__DELAY_NODE_HPP_
 #define TOPIC_TOOLS__DELAY_NODE_HPP_
 
-#include <deque>
+#include <list>
 #include <memory>
 #include <utility>
 
@@ -27,8 +27,6 @@ namespace topic_tools
 {
 class DelayNode final : public ToolBaseNode
 {
-  using StampedMessage = std::pair<rclcpp::Time, std::shared_ptr<rclcpp::SerializedMessage>>;
-
 public:
   TOPIC_TOOLS_PUBLIC
   explicit DelayNode(const rclcpp::NodeOptions & options);
@@ -38,7 +36,7 @@ private:
 
   rclcpp::Duration delay_;
   bool use_wall_clock_;
-  std::deque<StampedMessage> queue_;
+  std::list<rclcpp::TimerBase::SharedPtr> timers_;
 };
 }  // namespace topic_tools
 
