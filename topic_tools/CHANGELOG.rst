@@ -2,8 +2,8 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.0 (2022-02-22)
+------------------
 * Improve QoS detection robustness (`#27 <https://github.com/wep21/topic_tools/issues/27>`_)
   * improve qos detection robustness
   Co-authored-by: Emerson Knapp <eknapp@amazon.com>
