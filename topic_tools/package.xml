@@ -5,7 +5,7 @@
   <version>1.0.0</version>
   <description>
     Tools for directing, throttling, selecting, and otherwise messing with
-    ROS2 topics at a meta level.
+    ROS 2 topics at a meta level.
   </description>
   <maintainer email="me@emersonknapp.com">Emerson Knapp</maintainer>
   <maintainer email="ros-tooling@googlegroups.com">ROS Tooling Working Group</maintainer>
