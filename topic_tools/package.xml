@@ -3,7 +3,10 @@
 <package format="3">
   <name>topic_tools</name>
   <version>1.0.0</version>
-  <description>TODO: Package description</description>
+  <description>
+    Tools for directing, throttling, selecting, and otherwise messing with
+    ROS 2 topics at a meta level.
+  </description>
   <maintainer email="me@emersonknapp.com">Emerson Knapp</maintainer>
   <maintainer email="ros-tooling@googlegroups.com">ROS Tooling Working Group</maintainer>
   <license>Apache License 2.0</license>
