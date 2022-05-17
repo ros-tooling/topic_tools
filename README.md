@@ -104,7 +104,7 @@ ros2 run topic_tools throttle bytes base_scan 1024 1.0
     - the same as if provided as a command line argument
 - `lazy` (bool, default=False)
     - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic`
-- `ues_wall_clock` (bool, default=False)
+- `use_wall_clock` (bool, default=False)
     - If True, then perform all rate measurements against wall clock time, regardless of whether simulation / log time is in effect.
 
 ### Drop
