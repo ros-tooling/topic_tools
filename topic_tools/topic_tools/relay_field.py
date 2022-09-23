@@ -23,7 +23,6 @@ Usage summary.
 
 import argparse
 import copy
-import importlib
 import os
 import sys
 import yaml
@@ -38,6 +37,7 @@ from ros2topic.api import get_msg_class
 from ros2topic.api import qos_profile_from_short_keys
 from rosidl_runtime_py import set_message_fields
 from rosidl_runtime_py.utilities import get_message
+
 
 class RelayField(Node):
 
@@ -204,7 +204,7 @@ def main(argv=sys.argv[1:]):
              '(overrides durability value of --qos-profile option, default: '
              'Automatically match existing publishers )')
 
-    # get and strip out ros args first                                                                                                                      
+    # get and strip out ros args first
     args = parser.parse_args(remove_ros_args(args=argv))
     rclpy.init(args=argv)
 
