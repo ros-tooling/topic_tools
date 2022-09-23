@@ -37,9 +37,27 @@ ros2 run topic_tools relay base_scan my_base_scan
 - `lazy` (bool, default=False)
     - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic`
 
+### RelayField
+
+RelayField is a ROS 2 node that allows to republish data in a different message type
+
+#### Usage
+
+```
+ros2 run topic_tools transform <input topic> <output topic> <output type> [<expression on m>] [--import <modules>] [--field <topic_field>]
+```
+
+Subscribe to `input topic` and republish one or many of its fields onto another field in a different message type
+
+E.g. publish the contents of the `data` field in a `std_msgs/msg/String` onto the `frame_id` field of a `std_msgs/msg/Header`:
+
+```
+ros2 run topic_tools relay_field /chatter /header std_msgs/Header "{stamp: {sec: 0, nanosec: 0}, frame_id: m.data}"
+```
+
 ### Transform
 
-Transform is ROS 2 node that allows to take a topic or one of it fields and output it on another topic
+Transform is a ROS 2 node that allows to take a topic or one of it fields and output it on another topic
 
 #### Usage
 
