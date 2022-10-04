@@ -19,13 +19,15 @@
 Usage summary.
 
 @author: Kentaro Wada, Esteve Fernandez
+Allows to republish data in a different message type.
+* Examples
+$ ros2 run topic_tools relay_field /chatter /header std_msgs/Header "{stamp: {sec: 0, nanosec: 0}, frame_id: m.data}"
 """
 
 import argparse
 import copy
 import os
 import sys
-import yaml
 
 import rclpy
 from rclpy.node import Node
@@ -37,7 +39,7 @@ from ros2topic.api import get_msg_class
 from ros2topic.api import qos_profile_from_short_keys
 from rosidl_runtime_py import set_message_fields
 from rosidl_runtime_py.utilities import get_message
-
+import yaml
 
 class RelayField(Node):
 
@@ -143,7 +145,7 @@ class RelayField(Node):
         try:
             pub_args = self._eval_in_dict_impl(msg_generation, None, {'m': m})
         except AttributeError as ex:
-            raise RuntimeError(f"Invalid field: {ex}")
+            raise RuntimeError(f'Invalid field: {ex}')
 
         msg = self.output_class()
         set_message_fields(msg, pub_args)
@@ -159,17 +161,15 @@ def main(argv=sys.argv[1:]):
             '<input> <output topic> <output type> '
             '<expression on m>\n\n'
             'Example:\n\tros2 run topic_tools relay_field '
-            '/chatter /header std_msgs/Header\n\t'
-            '"seq: 0\n\t stamp:\n\t   secs: 0\n\t   nsecs: 0\n\t   '
-            'frame_id: m.data"\n\n'
-            )
+            '/chatter /header std_msgs/Header '
+            '"{stamp: {sec: 0, nanosec: 0}, frame_id: m.data}"')
         )
     parser.add_argument('input', help='Input topic or topic field.')
     parser.add_argument('output_topic', help='Output topic.')
     parser.add_argument('output_type', help='Output topic type.')
     parser.add_argument(
         'expression',
-        help='Python expression to apply on the input message \'m\'.'
+        help="Python expression to apply on the input message 'm'."
         )
     parser.add_argument(
         '--wait-for-start', action='store_true',
