@@ -22,7 +22,7 @@ Usage summary.
 Allows to republish data in a different message type.
 * Examples
 $ ros2 run topic_tools relay_field /chatter /header std_msgs/Header "{stamp: {sec: 0, nanosec: 0}, frame_id: m.data}"
-"""
+"""  # noqa
 
 import argparse
 import copy
@@ -40,6 +40,7 @@ from ros2topic.api import qos_profile_from_short_keys
 from rosidl_runtime_py import set_message_fields
 from rosidl_runtime_py.utilities import get_message
 import yaml
+
 
 class RelayField(Node):
 
