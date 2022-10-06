@@ -21,7 +21,8 @@
 
   <exec_depend>rclpy</exec_depend>
   <exec_depend>ros2cli</exec_depend>
-  <exec_depend>rosidl_runtime_py</exec_depend>
+  <exec_depend condition="$ROS_DISTRO == humble" version_gt="0.9.2">rosidl_runtime_py</exec_depend>
+  <exec_depend condition="$ROS_DISTRO == rolling" version_gte="0.11.0">rosidl_runtime_py</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
