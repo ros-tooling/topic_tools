@@ -3,12 +3,14 @@ name: Lint
 on:
   pull_request:
 
+env:
+  AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS: 1
 jobs:
   ament_lint:
     name: ament_${{ matrix.linter }}
     runs-on: ubuntu-latest
     container:
-      image: rostooling/setup-ros-docker:ubuntu-focal-ros-rolling-ros-base-latest
+      image: rostooling/setup-ros-docker:ubuntu-jammy-ros-rolling-ros-base-latest
     strategy:
       fail-fast: false
       matrix:
