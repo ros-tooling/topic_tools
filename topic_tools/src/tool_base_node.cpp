@@ -31,7 +31,7 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
 {
   if (auto source_info = try_discover_source()) {
     // always relay same topic type and QoS profile as the first available source
-    if (*topic_type_ != source_info->first || *qos_profile_ != source_info->second || !pub_) {
+    if (!topic_type_ || !qos_profile_ || *topic_type_ != source_info->first || *qos_profile_ != source_info->second || !pub_) {
       topic_type_ = source_info->first;
       qos_profile_ = source_info->second;
       pub_ = this->create_generic_publisher(output_topic_, *topic_type_, *qos_profile_);
