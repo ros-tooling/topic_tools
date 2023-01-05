@@ -36,6 +36,7 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
     {
       topic_type_ = source_info->first;
       qos_profile_ = source_info->second;
+      std::scoped_lock lock(pub_mutex_);
       pub_ = this->create_generic_publisher(output_topic_, *topic_type_, *qos_profile_);
     }
 
@@ -55,6 +56,7 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
     // we don't have any source to republish, so we don't need a publisher
     // also, if the source topic type changes while it's offline this
     // prevents a crash due to mismatched topic types
+    std::scoped_lock lock(pub_mutex_);
     pub_.reset();
   }
 }

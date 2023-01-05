@@ -19,6 +19,7 @@
 #include <optional>  // NOLINT : https://github.com/ament/ament_lint/pull/324
 #include <string>
 #include <utility>
+#include <mutex>
 
 #include "rclcpp/rclcpp.hpp"
 #include "topic_tools/visibility_control.h"
@@ -48,6 +49,7 @@ protected:
   rclcpp::TimerBase::SharedPtr discovery_timer_;
   rclcpp::GenericPublisher::SharedPtr pub_;
   rclcpp::GenericSubscription::SharedPtr sub_;
+  std::mutex pub_mutex_;
 };
 }  // namespace topic_tools
 
