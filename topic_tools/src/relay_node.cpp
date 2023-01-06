@@ -38,7 +38,10 @@ RelayNode::RelayNode(const rclcpp::NodeOptions & options)
 
 void RelayNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
 {
-  pub_->publish(*msg);
+  std::scoped_lock lock(pub_mutex_);
+  if (pub_) {
+    pub_->publish(*msg);
+  }
 }
 
 }  // namespace topic_tools
