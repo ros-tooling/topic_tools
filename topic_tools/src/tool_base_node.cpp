@@ -40,24 +40,24 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
       pub_ = this->create_generic_publisher(output_topic_, *topic_type_, *qos_profile_);
     }
     // at this point it is certain that our publisher exists
-    
-    // If lazy, only subscribe to input_topic if there is at least one subscriber on the output_topic
+
+    // If lazy, only subscribe to input_topic if there is at least 1 subscriber on the output_topic
     if (!lazy_ ||
       pub_->get_subscription_count() + pub_->get_intra_process_subscription_count() > 0)
     {
+      // subscription exists already but needs changing if input_topic_ changes
+      if (sub_ &&
+        sub_->get_topic_name() != get_node_topics_interface()->resolve_topic_name(input_topic_))
+      {
+        sub_.reset();
+      }
+      // subscription needs creating if it doesn't exist
       if (!sub_) {
         sub_ = this->create_generic_subscription(
           input_topic_, *topic_type_, *qos_profile_,
           std::bind(&ToolBaseNode::process_message, this, std::placeholders::_1));
-      } 
-      else {
-        // subscription exists already but needs changing if input_topic_ changes
-        if(sub_->get_topic_name() != get_node_topics_interface()->resolve_topic_name(input_topic_)) {
-          sub_.reset();
-        }
       }
-    } 
-    else {
+    } else {
       // Lazy and no subscriber doesn't need to subscribe
       sub_.reset();
     }
