@@ -55,6 +55,11 @@ ThrottleNode::ThrottleNode(const rclcpp::NodeOptions & options)
 
 void ThrottleNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
 {
+  std::scoped_lock lock(pub_mutex_);
+  if (!pub_) {
+    return;
+  }
+
   const auto & now = use_wall_clock_ ? rclcpp::Clock{}.now() : this->now();
   if (throttle_type_ == ThrottleType::MESSAGES) {
     if (last_time_ > now) {
