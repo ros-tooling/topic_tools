@@ -85,6 +85,8 @@ target_link_libraries(mux
 )
 
 if(BUILD_TESTING)
+  find_package(std_msgs REQUIRED)
+
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
