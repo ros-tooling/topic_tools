@@ -45,13 +45,11 @@ TEST_F(TestRelay, MessagesAreEffectivelyRelayed) {
   auto subscription = test_node->create_subscription<std_msgs::msg::String>(
     "/relay_test/output", 10, std::bind(&TestRelay::topic_callback, this, _1));
   auto publisher = test_node->create_publisher<std_msgs::msg::String>("/relay_test/input", 10);
-  rclcpp::spin_some(test_node);
 
   auto options = rclcpp::NodeOptions{};
   options.append_parameter_override("input_topic", "/relay_test/input");
   options.append_parameter_override("output_topic", "/relay_test/output");
   auto target_node = std::make_shared<topic_tools::RelayNode>(options);
-  rclcpp::spin_some(target_node);
 
   for (std::string msg_content : {"hello", "again"}) {
     expected_msg = msg_content;
