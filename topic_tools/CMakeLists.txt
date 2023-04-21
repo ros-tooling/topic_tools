@@ -103,6 +103,19 @@ if(BUILD_TESTING)
   target_link_libraries(test_relay
     relay_node
   )
+
+  ament_add_gtest(test_drop test/test_drop.cpp)
+  target_include_directories(test_drop PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  )
+  ament_target_dependencies(test_drop
+    rclcpp
+    std_msgs
+  )
+  target_link_libraries(test_drop
+    drop_node
+  )
 endif()
 
 ament_auto_package(
