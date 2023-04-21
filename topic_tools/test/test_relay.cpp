@@ -12,55 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <memory>
+#include <string>
+
 #include "gtest/gtest.h"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
 #include "topic_tools/relay_node.hpp"
+#include "test_topic_tool_single_sub.hpp"
 
-class TestRelay : public ::testing::Test
-{
-public:
-  static void SetUpTestCase()
-  {
-    rclcpp::init(0, nullptr);
-  }
-  static void TearDownTestCase()
-  {
-    rclcpp::shutdown();
-  }
-  void topic_callback(const std_msgs::msg::String::SharedPtr msg)
-  {
-    ASSERT_EQ(msg->data, expected_msg);
-    received_relays++;
-  }
-
-  std::string expected_msg;
-  int received_relays{0};
-};
-
-TEST_F(TestRelay, MessagesAreEffectivelyRelayed) {
-  using std::placeholders::_1;
-  auto test_node = rclcpp::Node::make_shared("MessagesAreEffectivelyRelayed");
-  auto subscription = test_node->create_subscription<std_msgs::msg::String>(
-    "/relay_test/output", 10, std::bind(&TestRelay::topic_callback, this, _1));
-  auto publisher = test_node->create_publisher<std_msgs::msg::String>("/relay_test/input", 10);
-
+TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyRelayed) {
   auto options = rclcpp::NodeOptions{};
-  options.append_parameter_override("input_topic", "/relay_test/input");
-  options.append_parameter_override("output_topic", "/relay_test/output");
+  options.append_parameter_override("input_topic", get_target_input_topic());
+  options.append_parameter_override("output_topic", get_target_output_topic());
   auto target_node = std::make_shared<topic_tools::RelayNode>(options);
 
+  int published_msgs = 0;
   for (std::string msg_content : {"hello", "again"}) {
-    expected_msg = msg_content;
+    std::function<void(const std_msgs::msg::String::SharedPtr)> validator =
+      [msg_content](const std_msgs::msg::String::SharedPtr msg) {
+        ASSERT_EQ(msg->data, msg_content);
+      };
+    set_msg_validator(validator);
+    publish_and_check(msg_content, target_node);
 
-    auto message = std_msgs::msg::String();
-    message.data = msg_content;
-    publisher->publish(message);
-
-    rclcpp::spin_some(target_node);
-    rclcpp::spin_some(test_node);
+    published_msgs++;
   }
 
-  ASSERT_EQ(received_relays, 2);
+  ASSERT_EQ(get_received_msgs(), published_msgs);
 }
