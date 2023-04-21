@@ -58,7 +58,6 @@ TEST_F(TestRelay, MessagesAreEffectivelyRelayed) {
     message.data = msg_content;
     publisher->publish(message);
 
-    rclcpp::spin_some(test_node);
     rclcpp::spin_some(target_node);
     rclcpp::spin_some(test_node);
   }
