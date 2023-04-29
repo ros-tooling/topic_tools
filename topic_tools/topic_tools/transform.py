@@ -61,6 +61,17 @@ class Transform(Node):
 
         self.expression = args.expression
 
+        try:
+            self.expression_as_lambda = eval(f'lambda m: {self.expression}', self.modules)
+        except NameError as e:
+            print(f"Expression using variables other than 'm': {e.message}", file=sys.stderr)
+            raise
+        except UnboundLocalError as e:
+            print(f'Wrong expression: {e.message}', file=sys.stderr)
+            raise
+        except Exception:
+            raise
+
         input_topic_in_ns = args.input
         if not input_topic_in_ns.startswith('/'):
             input_topic_in_ns = self.get_namespace() + args.input
@@ -152,11 +163,7 @@ class Transform(Node):
                 except AttributeError as ex:
                     raise RuntimeError(f"Invalid field '{'.'.join(self.field)}': {ex}")
         try:
-            res = eval(f'{self.expression}', self.modules, {'m': m})
-        except NameError as e:
-            print(f"Expression using variables other than 'm': {e.message}", file=sys.stderr)
-        except UnboundLocalError as e:
-            print(f'Wrong expression: {e.message}', file=sys.stderr)
+            res = self.expression_as_lambda(m)
         except Exception:
             raise
         else:
