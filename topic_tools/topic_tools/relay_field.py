@@ -28,7 +28,6 @@ import argparse
 import copy
 import os
 import sys
-import functools
 
 import rclpy
 from rclpy.node import Node
@@ -69,7 +68,6 @@ class RelayField(Node):
         self.sub = self.create_subscription(
             input_class, input_topic_in_ns, self.callback, qos_profile)
 
-    @functools.lru_cache(maxsize=256)
     def _eval_in_dict_impl(self, dict_, globals_, locals_):
         res = copy.deepcopy(dict_)
         for k, v in res.items():
@@ -151,11 +149,7 @@ class RelayField(Node):
             raise RuntimeError(f'Invalid field: {ex}')
 
         msg = self.output_class()
-        timestamp_fields = set_message_fields(
-            msg, pub_args, expand_header_auto=True, expand_time_now=True)
-        stamp_now = self.get_clock().now().to_msg()
-        for field_setter in timestamp_fields:
-            field_setter(stamp_now)
+        set_message_fields(msg, pub_args)
         self.pub.publish(msg)
 
 
