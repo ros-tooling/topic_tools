@@ -116,6 +116,19 @@ if(BUILD_TESTING)
   target_link_libraries(test_drop
     drop_node
   )
+
+  ament_add_gtest(test_throttle test/test_throttle.cpp)
+  target_include_directories(test_throttle PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  )
+  ament_target_dependencies(test_throttle
+    rclcpp
+    std_msgs
+  )
+  target_link_libraries(test_throttle
+    throttle_node
+  )
 endif()
 
 ament_auto_package(

@@ -33,7 +33,7 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyDropped) {
 
   int published_msgs = 0;
   for (std::string msg_content :
-    {"droped", "not dropped", "dropped", "not dropped", "droped"})
+    {"droped", "not dropped", "dropped", "not dropped", "dropped"})
   {
     std::function<void(const std_msgs::msg::String::SharedPtr)> validator =
       [](const std_msgs::msg::String::SharedPtr msg) {
