@@ -28,6 +28,8 @@
   <test_depend>ament_lint_common</test_depend>
   <test_depend>ament_cmake_gtest</test_depend>
   <test_depend>std_msgs</test_depend>
+  <test_depend condition="$ROS_DISTRO == humble" version_gt="0.9.2">rosidl_runtime_py</test_depend>
+  <test_depend condition="$ROS_DISTRO == rolling" version_gte="0.11.0">rosidl_runtime_py</test_depend>
 
   <member_of_group>rosidl_interface_packages</member_of_group>
 

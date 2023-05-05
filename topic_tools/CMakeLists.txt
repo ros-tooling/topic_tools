@@ -129,6 +129,19 @@ if(BUILD_TESTING)
   target_link_libraries(test_throttle
     throttle_node
   )
+
+  ament_add_gtest(test_mux test/test_mux.cpp)
+  target_include_directories(test_mux PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  )
+  ament_target_dependencies(test_mux
+    rclcpp
+    std_msgs
+  )
+  target_link_libraries(test_mux
+    mux_node
+  )
 endif()
 
 ament_auto_package(
