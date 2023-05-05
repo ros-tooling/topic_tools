@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include <unistd.h>
-
 #include <memory>
 #include <string>
 
@@ -22,7 +21,7 @@
 #include "std_msgs/msg/string.hpp"
 
 #include "topic_tools/throttle_node.hpp"
-#include "test_topic_tool_single_sub.hpp"
+#include "test_topic_tool.hpp"
 
 using namespace std::chrono_literals;
 

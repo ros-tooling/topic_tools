@@ -21,13 +21,42 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
-class TestTopicToolSingleSub : public ::testing::Test
+class TestTopicTool : public ::testing::Test
 {
 public:
   static void SetUpTestCase()
   {
     rclcpp::init(0, nullptr);
   }
+
+  static void TearDownTestCase()
+  {
+    rclcpp::shutdown();
+  }
+  void set_msg_validator(const std::function<void(const std_msgs::msg::String::SharedPtr)> & f)
+  {
+    msg_validator_ = f;
+  }
+  int get_received_msgs()
+  {
+    return received_msgs_;
+  }
+
+protected:
+  void topic_callback(const std_msgs::msg::String::SharedPtr msg)
+  {
+    msg_validator_(msg);
+    received_msgs_++;
+  }
+
+private:
+  std::function<void(const std_msgs::msg::String::SharedPtr)> msg_validator_;
+  int received_msgs_{0};
+};
+
+class TestTopicToolSingleSub : public TestTopicTool
+{
+public:
   void SetUp()
   {
     using std::placeholders::_1;
@@ -46,10 +75,6 @@ public:
     subscription_.reset();
     publisher_.reset();
   }
-  static void TearDownTestCase()
-  {
-    rclcpp::shutdown();
-  }
   void publish_and_check(
     std::string msg_content,
     std::shared_ptr<rclcpp::Node> target_node)
@@ -59,14 +84,6 @@ public:
     publisher_->publish(message);
     rclcpp::spin_some(target_node);
     rclcpp::spin_some(test_node_);
-  }
-  void set_msg_validator(const std::function<void(const std_msgs::msg::String::SharedPtr)> & f)
-  {
-    msg_validator_ = f;
-  }
-  int get_received_msgs()
-  {
-    return received_msgs_;
   }
   std::string get_target_input_topic()
   {
@@ -78,17 +95,9 @@ public:
   }
 
 private:
-  void topic_callback(const std_msgs::msg::String::SharedPtr msg)
-  {
-    msg_validator_(msg);
-    received_msgs_++;
-  }
   std::shared_ptr<rclcpp::Node> test_node_;
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
-  std::function<void(const std_msgs::msg::String::SharedPtr)> msg_validator_;
-  std::string expected_msg;
-  int received_msgs_{0};
   std::string target_input_topic_;
   std::string target_output_topic_;
 };

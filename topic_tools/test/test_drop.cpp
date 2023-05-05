@@ -20,7 +20,7 @@
 #include "std_msgs/msg/string.hpp"
 
 #include "topic_tools/drop_node.hpp"
-#include "test_topic_tool_single_sub.hpp"
+#include "test_topic_tool.hpp"
 
 TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyDropped) {
   auto options = rclcpp::NodeOptions{};
