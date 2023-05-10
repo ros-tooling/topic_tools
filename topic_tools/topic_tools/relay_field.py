@@ -48,7 +48,8 @@ class RelayField(Node):
         super().__init__(f'relay_field_{os.getpid()}')
 
         self.msg_generation = yaml.safe_load(args.expression)
-        self.msg_generation_lambda = lambda m: self._eval_in_dict_impl(self.msg_generation, None, {'m': m})
+        self.msg_generation_lambda = lambda m: self._eval_in_dict_impl(
+            self.msg_generation, None, {'m': m})
 
         input_topic_in_ns = args.input
         if not input_topic_in_ns.startswith('/'):
