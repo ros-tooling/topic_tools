@@ -150,7 +150,11 @@ class RelayField(Node):
             raise RuntimeError(f'Invalid field: {ex}')
 
         msg = self.output_class()
-        set_message_fields(msg, pub_args)
+        timestamp_fields = set_message_fields(
+            msg, pub_args, expand_header_auto=True, expand_time_now=True)
+        stamp_now = self.get_clock().now().to_msg()
+        for field_setter in timestamp_fields:
+            field_setter(stamp_now)
         self.pub.publish(msg)
 
 
