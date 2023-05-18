@@ -47,7 +47,9 @@ class RelayField(Node):
     def __init__(self, args):
         super().__init__(f'relay_field_{os.getpid()}')
 
-        self.expression = args.expression
+        self.msg_generation = yaml.safe_load(args.expression)
+        self.msg_generation_lambda = lambda m: self._eval_in_dict_impl(
+            self.msg_generation, None, {'m': m})
 
         input_topic_in_ns = args.input
         if not input_topic_in_ns.startswith('/'):
@@ -142,9 +144,8 @@ class RelayField(Node):
         return qos_profile
 
     def callback(self, m):
-        msg_generation = yaml.safe_load(self.expression)
         try:
-            pub_args = self._eval_in_dict_impl(msg_generation, None, {'m': m})
+            pub_args = self.msg_generation_lambda(m)
         except AttributeError as ex:
             raise RuntimeError(f'Invalid field: {ex}')
 
