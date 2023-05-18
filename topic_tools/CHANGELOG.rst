@@ -2,6 +2,20 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Performance improvement in Python scripts (`#60 <https://github.com/ros-tooling/topic_tools/issues/60>`_)
+* Add delay tool (`#30 <https://github.com/ros-tooling/topic_tools/issues/30>`_)
+* Fix race in throttle node (`#56 <https://github.com/ros-tooling/topic_tools/issues/56>`_)
+* Fix mux (`#51 <https://github.com/ros-tooling/topic_tools/issues/51>`_)
+* Eliminate race condition in relay node (`#49 <https://github.com/ros-tooling/topic_tools/issues/49>`_)
+* Fixing conditional jump based on uninitialized optional values (`#48 <https://github.com/ros-tooling/topic_tools/issues/48>`_)
+* Revert "Workaround for galactic build (`#17 <https://github.com/ros-tooling/topic_tools/issues/17>`_)" (`#24 <https://github.com/ros-tooling/topic_tools/issues/24>`_)
+* Added support for expanding now and auto values for headers and time fields (`#43 <https://github.com/ros-tooling/topic_tools/issues/43>`_)
+* Port relay_field from ROS 1 (`#42 <https://github.com/ros-tooling/topic_tools/issues/42>`_)
+* chore: add description into package.xml (`#34 <https://github.com/ros-tooling/topic_tools/issues/34>`_)
+* Contributors: Aleksander Szymański, Bartosz Kozlowiec, Christophe Bedard, Daisuke Nishimatsu, Esteve Fernandez, Haoguang Yang, Marcel Zeilinger, Martí Morta
+
 1.0.0 (2022-02-22)
 ------------------
 * Improve QoS detection robustness (`#27 <https://github.com/wep21/topic_tools/issues/27>`_)
