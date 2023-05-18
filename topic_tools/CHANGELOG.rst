@@ -2,8 +2,8 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2023-05-18)
+------------------
 * Performance improvement in Python scripts (`#60 <https://github.com/ros-tooling/topic_tools/issues/60>`_)
 * Add delay tool (`#30 <https://github.com/ros-tooling/topic_tools/issues/30>`_)
 * Fix race in throttle node (`#56 <https://github.com/ros-tooling/topic_tools/issues/56>`_)
