@@ -52,9 +52,10 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyDroppedWithOddParameters) {
   auto options = rclcpp::NodeOptions{};
   options.append_parameter_override("input_topic", get_target_input_topic());
   options.append_parameter_override("output_topic", get_target_output_topic());
-  // Drop 1 every two messages
-  options.append_parameter_override("X", 3);
-  options.append_parameter_override("Y", 5);
+  constexpr int drop_n_msgs = 3;
+  constexpr int out_of_n_msgs = 5;
+  options.append_parameter_override("X", drop_n_msgs);
+  options.append_parameter_override("Y", out_of_n_msgs);
   auto target_node = std::make_shared<topic_tools::DropNode>(options);
 
   int published_msgs = 0;
@@ -71,5 +72,5 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyDroppedWithOddParameters) {
     published_msgs++;
   }
 
-  ASSERT_EQ(get_received_msgs(), (published_msgs / 5) * 2);
+  ASSERT_EQ(get_received_msgs(), (published_msgs / out_of_n_msgs) * (out_of_n_msgs - drop_n_msgs));
 }

@@ -44,12 +44,15 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyThrottledByMessages) {
     [](const std_msgs::msg::String::SharedPtr msg) {
       ASSERT_EQ(msg->data, "not dropped");
     };
+
+  int expected_messages = 0;
   for (std::string msg_content :
     {"not dropped", "dropped", "dropped", "dropped"})
   {
     set_msg_validator(validator);
     publish_and_check(msg_content, target_node);
   }
+  expected_messages += 1;
 
   sleep(1);
 
@@ -59,8 +62,9 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyThrottledByMessages) {
     set_msg_validator(validator);
     publish_and_check(msg_content, target_node);
   }
+  expected_messages += 1;
 
-  ASSERT_EQ(get_received_msgs(), 2);
+  ASSERT_EQ(get_received_msgs(), expected_messages);
 }
 
 TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyThrottledByBandwith) {
@@ -80,12 +84,15 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyThrottledByBandwith) {
     [](const std_msgs::msg::String::SharedPtr msg) {
       ASSERT_EQ(msg->data, "not dropped");
     };
+
+  int expected_messages = 0;
   for (std::string msg_content :
     {"not dropped", "not dropped", "dropped", "dropped", "dropped"})
   {
     set_msg_validator(validator);
     publish_and_check(msg_content, target_node);
   }
+  expected_messages += 2;
 
   sleep(1);
 
@@ -95,6 +102,7 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyThrottledByBandwith) {
     set_msg_validator(validator);
     publish_and_check(msg_content, target_node);
   }
+  expected_messages += 2;
 
-  ASSERT_EQ(get_received_msgs(), 4);
+  ASSERT_EQ(get_received_msgs(), expected_messages);
 }
