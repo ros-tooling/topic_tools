@@ -72,7 +72,7 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyThrottledByBandwith) {
   options.append_parameter_override("input_topic", get_target_input_topic());
   options.append_parameter_override("output_topic", get_target_output_topic());
 
-  // Allow 2 message per second
+  // Allow 24 bytes per second
   constexpr int bytes_per_sec = 24;
   options.append_parameter_override("throttle_type", "bytes");
   options.append_parameter_override("bytes_per_sec", bytes_per_sec);
