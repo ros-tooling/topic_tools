@@ -34,10 +34,12 @@ public:
   {
     rclcpp::shutdown();
   }
+
   void set_msg_validator(const std::function<void(const std_msgs::msg::String::SharedPtr)> & f)
   {
     msg_validator_ = f;
   }
+
   int get_received_msgs()
   {
     return received_msgs_;
@@ -70,12 +72,14 @@ public:
       target_output_topic_, 10, std::bind(&TestTopicToolSingleSub::topic_callback, this, _1));
     publisher_ = test_node_->create_publisher<std_msgs::msg::String>(target_input_topic_, 10);
   }
+
   void TearDown()
   {
     test_node_.reset();
     subscription_.reset();
     publisher_.reset();
   }
+
   void publish_and_check(
     std::string msg_content,
     std::shared_ptr<rclcpp::Node> target_node)
@@ -86,10 +90,12 @@ public:
     rclcpp::spin_some(target_node);
     rclcpp::spin_some(test_node_);
   }
+
   std::string get_target_input_topic()
   {
     return target_input_topic_;
   }
+
   std::string get_target_output_topic()
   {
     return target_output_topic_;
@@ -122,6 +128,7 @@ public:
         topic_names[i], 10);
     }
   }
+
   void TearDown()
   {
     test_node_.reset();
@@ -130,6 +137,7 @@ public:
       publishers_[i].reset();
     }
   }
+
   void publish_and_check(
     std::string msg_content,
     int publisher_index,
@@ -142,6 +150,7 @@ public:
     rclcpp::spin_some(target_node);
     rclcpp::spin_some(test_node_);
   }
+
   std::vector<std::string> get_target_input_topics()
   {
     std::vector<std::string> res;
@@ -150,6 +159,7 @@ public:
     }
     return res;
   }
+
   std::string get_target_output_topic()
   {
     return target_output_topic_;

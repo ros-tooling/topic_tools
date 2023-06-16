@@ -43,6 +43,7 @@ public:
       };
     set_msg_validator(validator);
   }
+
   void change_topic(int topic_index)
   {
     using namespace std::chrono_literals;
@@ -59,6 +60,7 @@ public:
     auto result = srv_client_->async_send_request(request);
     rclcpp::spin_some(target_node_);
   }
+
   void publish_and_check(
     std::string msg_content,
     int publisher_index)
