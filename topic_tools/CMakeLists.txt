@@ -96,12 +96,10 @@ if(BUILD_TESTING)
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
   )
-  ament_target_dependencies(test_relay
-    rclcpp
-    std_msgs
-  )
   target_link_libraries(test_relay
     relay_node
+    rclcpp::rclcpp
+    ${std_msgs_TARGETS}
   )
 
   ament_add_gtest(test_drop test/test_drop.cpp)
@@ -109,12 +107,10 @@ if(BUILD_TESTING)
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
   )
-  ament_target_dependencies(test_drop
-    rclcpp
-    std_msgs
-  )
   target_link_libraries(test_drop
     drop_node
+    rclcpp::rclcpp
+    ${std_msgs_TARGETS}
   )
 
   ament_add_gtest(test_throttle test/test_throttle.cpp)
@@ -122,12 +118,10 @@ if(BUILD_TESTING)
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
   )
-  ament_target_dependencies(test_throttle
-    rclcpp
-    std_msgs
-  )
   target_link_libraries(test_throttle
     throttle_node
+    rclcpp::rclcpp
+    ${std_msgs_TARGETS}
   )
 
   ament_add_gtest(test_mux test/test_mux.cpp)
@@ -135,12 +129,11 @@ if(BUILD_TESTING)
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
   )
-  ament_target_dependencies(test_mux
-    rclcpp
-    std_msgs
-  )
+
   target_link_libraries(test_mux
     mux_node
+    rclcpp::rclcpp
+    ${std_msgs_TARGETS}
   )
 endif()
 
