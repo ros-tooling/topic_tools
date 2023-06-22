@@ -173,6 +173,7 @@ void MuxNode::on_mux_select(
     );
     if (it != input_topics_.end()) {
       input_topic_ = request->topic;
+      make_subscribe_unsubscribe_decisions();
       RCLCPP_INFO(get_logger(), "mux selected input: [%s]", request->topic.c_str());
       response->success = true;
     }

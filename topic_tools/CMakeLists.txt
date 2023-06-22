@@ -101,8 +101,56 @@ target_link_libraries(delay
 )
 
 if(BUILD_TESTING)
+  find_package(std_msgs REQUIRED)
+
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_gtest REQUIRED)
+  ament_add_gtest(test_relay test/test_relay.cpp)
+  target_include_directories(test_relay PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  )
+  target_link_libraries(test_relay
+    relay_node
+    rclcpp::rclcpp
+    ${std_msgs_TARGETS}
+  )
+
+  ament_add_gtest(test_drop test/test_drop.cpp)
+  target_include_directories(test_drop PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  )
+  target_link_libraries(test_drop
+    drop_node
+    rclcpp::rclcpp
+    ${std_msgs_TARGETS}
+  )
+
+  ament_add_gtest(test_throttle test/test_throttle.cpp)
+  target_include_directories(test_throttle PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  )
+  target_link_libraries(test_throttle
+    throttle_node
+    rclcpp::rclcpp
+    ${std_msgs_TARGETS}
+  )
+
+  ament_add_gtest(test_mux test/test_mux.cpp)
+  target_include_directories(test_mux PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  )
+
+  target_link_libraries(test_mux
+    mux_node
+    rclcpp::rclcpp
+    ${std_msgs_TARGETS}
+  )
 endif()
 
 ament_auto_package(
