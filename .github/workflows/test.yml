@@ -11,14 +11,19 @@ on:
 
 jobs:
   build_and_test:
+    name: test_${{ matrix.distro }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [humble, iron, rolling]
     container:
       image: rostooling/setup-ros-docker:ubuntu-jammy-latest
     steps:
     - uses: ros-tooling/action-ros-ci@v0.3
       with:
         package-name: topic_tools topic_tools_interfaces
-        target-ros2-distro: rolling
+        target-ros2-distro: ${{ matrix.distro }}
         vcs-repo-file-url: https://raw.githubusercontent.com/ros2/ros2/master/ros2.repos
         colcon-defaults: |
           {
