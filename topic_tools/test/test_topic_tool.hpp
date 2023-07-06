@@ -46,7 +46,7 @@ public:
   }
 
 protected:
-  void topic_callback(const std_msgs::msg::String::SharedPtr msg)
+  void topic_callback(std_msgs::msg::String::ConstSharedPtr msg)
   {
     msg_validator_(msg);
     received_msgs_++;
