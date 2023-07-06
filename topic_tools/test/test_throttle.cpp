@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <unistd.h>
+#include <chrono>
 #include <memory>
 #include <string>
+#include <thread>
 
 #include "gtest/gtest.h"
 #include "rclcpp/rclcpp.hpp"
@@ -38,7 +39,7 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyThrottledByMessages) {
   auto target_node = std::make_shared<topic_tools::ThrottleNode>(options);
 
   // Need to sleep 1 sec or the node will throttle the initial message
-  sleep(1);
+  std::this_thread::sleep_for(std::chrono::seconds(1));
 
   std::function<void(const std_msgs::msg::String::SharedPtr)> validator =
     [](const std_msgs::msg::String::SharedPtr msg) {
@@ -54,7 +55,7 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyThrottledByMessages) {
   }
   expected_messages += 1;
 
-  sleep(1);
+  std::this_thread::sleep_for(std::chrono::seconds(1));
 
   for (std::string msg_content :
     {"not dropped", "dropped", "dropped", "dropped"})
@@ -94,7 +95,7 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyThrottledByBandwith) {
   }
   expected_messages += 2;
 
-  sleep(1);
+  std::this_thread::sleep_for(std::chrono::seconds(1));
 
   for (std::string msg_content :
     {"not dropped", "not dropped", "dropped", "dropped", "dropped"})
