@@ -30,8 +30,8 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyRelayed) {
 
   int published_msgs = 0;
   for (std::string msg_content : {"hello", "again"}) {
-    std::function<void(const std_msgs::msg::String::SharedPtr)> validator =
-      [msg_content](const std_msgs::msg::String::SharedPtr msg) {
+    std::function<void(std_msgs::msg::String::ConstSharedPtr)> validator =
+      [msg_content](std_msgs::msg::String::ConstSharedPtr msg) {
         ASSERT_EQ(msg->data, msg_content);
       };
     set_msg_validator(validator);

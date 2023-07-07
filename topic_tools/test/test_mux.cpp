@@ -37,8 +37,8 @@ public:
 
     srv_client_ = test_node_->create_client<topic_tools_interfaces::srv::MuxSelect>("/mux/select");
 
-    std::function<void(const std_msgs::msg::String::SharedPtr)> validator =
-      [](const std_msgs::msg::String::SharedPtr msg) {
+    std::function<void(std_msgs::msg::String::ConstSharedPtr)> validator =
+      [](std_msgs::msg::String::ConstSharedPtr msg) {
         ASSERT_EQ(msg->data, "not dropped");
       };
     set_msg_validator(validator);

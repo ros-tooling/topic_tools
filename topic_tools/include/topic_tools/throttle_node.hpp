@@ -29,7 +29,7 @@ namespace topic_tools
 {
 class ThrottleNode final : public ToolBaseNode
 {
-  using Sent = std::pair<double, uint32_t>;
+  using Sent = std::pair<double, size_t>;
 
 public:
   TOPIC_TOOLS_PUBLIC
@@ -45,7 +45,7 @@ private:
   } throttle_type_;
   double msgs_per_sec_;
   std::chrono::nanoseconds period_;
-  int bytes_per_sec_;
+  int64_t bytes_per_sec_;
   double window_;
   rclcpp::Time last_time_;
   bool use_wall_clock_;

@@ -76,9 +76,11 @@ void ThrottleNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> ms
       sent_deque_.pop_front();
     }
     // sum up how many bytes are in the window
-    const auto bytes =
-      std::accumulate(
-      sent_deque_.begin(), sent_deque_.end(), 0, [](const auto a, const auto & b) {
+    const int64_t bytes = std::accumulate(
+      sent_deque_.begin(),
+      sent_deque_.end(),
+      int64_t{0},
+      [](int64_t a, const auto & b) {
         return a + b.second;
       });
     if (bytes < bytes_per_sec_) {
