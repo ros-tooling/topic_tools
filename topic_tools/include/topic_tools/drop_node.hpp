@@ -35,8 +35,8 @@ public:
 private:
   void process_message(std::shared_ptr<rclcpp::SerializedMessage> msg) override;
 
-  int x_;
-  int y_;
+  int64_t x_;
+  int64_t y_;
   int count_{0};
 };
 }  // namespace topic_tools

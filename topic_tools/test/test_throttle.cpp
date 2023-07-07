@@ -41,8 +41,8 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyThrottledByMessages) {
   // Need to sleep 1 sec or the node will throttle the initial message
   std::this_thread::sleep_for(std::chrono::seconds(1));
 
-  std::function<void(const std_msgs::msg::String::SharedPtr)> validator =
-    [](const std_msgs::msg::String::SharedPtr msg) {
+  std::function<void(std_msgs::msg::String::ConstSharedPtr)> validator =
+    [](std_msgs::msg::String::ConstSharedPtr msg) {
       ASSERT_EQ(msg->data, "not dropped");
     };
 
@@ -81,8 +81,8 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyThrottledByBandwith) {
   options.append_parameter_override("use_wall_clock", true);
   auto target_node = std::make_shared<topic_tools::ThrottleNode>(options);
 
-  std::function<void(const std_msgs::msg::String::SharedPtr)> validator =
-    [](const std_msgs::msg::String::SharedPtr msg) {
+  std::function<void(std_msgs::msg::String::ConstSharedPtr)> validator =
+    [](std_msgs::msg::String::ConstSharedPtr msg) {
       ASSERT_EQ(msg->data, "not dropped");
     };
 
