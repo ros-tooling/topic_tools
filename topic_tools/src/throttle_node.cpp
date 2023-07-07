@@ -79,7 +79,7 @@ void ThrottleNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> ms
     const int64_t bytes = std::accumulate(
       sent_deque_.begin(),
       sent_deque_.end(),
-      0,
+      int64_t{0},
       [](int64_t a, const auto & b) {
         return a + b.second;
       });
