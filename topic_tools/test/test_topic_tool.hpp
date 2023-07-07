@@ -35,7 +35,7 @@ public:
     rclcpp::shutdown();
   }
 
-  void set_msg_validator(const std::function<void(const std_msgs::msg::String::SharedPtr)> & f)
+  void set_msg_validator(const std::function<void(std_msgs::msg::String::ConstSharedPtr)> & f)
   {
     msg_validator_ = f;
   }
@@ -46,14 +46,14 @@ public:
   }
 
 protected:
-  void topic_callback(const std_msgs::msg::String::SharedPtr msg)
+  void topic_callback(std_msgs::msg::String::ConstSharedPtr msg)
   {
     msg_validator_(msg);
     received_msgs_++;
   }
 
 private:
-  std::function<void(const std_msgs::msg::String::SharedPtr)> msg_validator_;
+  std::function<void(std_msgs::msg::String::ConstSharedPtr)> msg_validator_;
   int received_msgs_{0};
 };
 

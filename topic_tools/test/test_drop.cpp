@@ -35,8 +35,8 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyDropped) {
   for (std::string msg_content :
     {"droped", "not dropped", "dropped", "not dropped", "dropped"})
   {
-    std::function<void(const std_msgs::msg::String::SharedPtr)> validator =
-      [](const std_msgs::msg::String::SharedPtr msg) {
+    std::function<void(std_msgs::msg::String::ConstSharedPtr)> validator =
+      [](std_msgs::msg::String::ConstSharedPtr msg) {
         ASSERT_EQ(msg->data, "not dropped");
       };
     set_msg_validator(validator);
@@ -62,8 +62,8 @@ TEST_F(TestTopicToolSingleSub, MessagesAreEffectivelyDroppedWithOddParameters) {
   for (std::string msg_content :
     {"droped", "dropped", "dropped", "not dropped", "not dropped", "dropped"})
   {
-    std::function<void(const std_msgs::msg::String::SharedPtr)> validator =
-      [](const std_msgs::msg::String::SharedPtr msg) {
+    std::function<void(std_msgs::msg::String::ConstSharedPtr)> validator =
+      [](std_msgs::msg::String::ConstSharedPtr msg) {
         ASSERT_EQ(msg->data, "not dropped");
       };
     set_msg_validator(validator);
