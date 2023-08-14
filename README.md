@@ -44,7 +44,7 @@ RelayField is a ROS 2 node that allows to republish data in a different message 
 #### Usage
 
 ```
-ros2 run topic_tools transform <input topic> <output topic> <output type> [<expression on m>] [--import <modules>] [--field <topic_field>]
+ros2 run topic_tools relay_field <input topic> <output topic> <output type> [<expression on m>]
 ```
 
 Subscribe to `input topic` and republish one or many of its fields onto another field in a different message type
