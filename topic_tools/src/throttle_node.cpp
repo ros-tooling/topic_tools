@@ -34,7 +34,7 @@ ThrottleNode::ThrottleNode(const rclcpp::NodeOptions & options)
   if (throttle_type_str == "messages") {
     throttle_type_ = ThrottleType::MESSAGES;
     msgs_per_sec_ = declare_parameter<double>("msgs_per_sec");
-    period_ = rclcpp::Rate(msgs_per_sec_).period();
+    period_ = rclcpp::Rate(msgs_per_sec_).period().to_chrono<decltype(period_)>();
   } else if (throttle_type_str == "bytes") {
     throttle_type_ = ThrottleType::BYTES;
     bytes_per_sec_ = declare_parameter<int>("bytes_per_sec");
