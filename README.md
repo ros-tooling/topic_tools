@@ -1,6 +1,6 @@
 # topic_tools
 
-This package is the ROS 2 port of http://wiki.ros.org/topic_tools
+This package is the ROS 2 port of https://wiki.ros.org/topic_tools
 
 Tools for directing, throttling, selecting, and otherwise manipulating ROS 2 topics at a meta-level. These tools do not generally perform serialization on the streams being manipulated, instead acting on generic binary data using `rclcpp`'s `GenericPublisher` and `GenericSubscription`.
 
