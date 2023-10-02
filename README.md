@@ -8,6 +8,14 @@ The tools in this package are provided as composable ROS 2 component nodes, so t
 
 ## Components
 
+- [Relay](#relay): Subscribes to a topic and republishes to another.
+- [RelayField](#relayfield): Republishes data in a different message type.
+- [Transform](#transform): Manipulates a topic or a field and outputs data on another topic.
+- [Throttle](#throttle): Republishes data with bandwidth or rate limit.
+- [Drop](#drop): Republishes by dropping X out of every Y incoming messages.
+- [Mux](#mux): Multiplexes incoming topics to an output.
+- [Delay](#delay): Delays and republishes incoming data.
+
 ### Relay
 
 Relay is ROS 2 node that subscribes to a topic and republishes all incoming data to another topic. It can work with any message type.
