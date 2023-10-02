@@ -205,8 +205,8 @@ ros2 run topic_tools mux sel_cmdvel auto_cmdvel joystick_cmdvel
     - the same as if provided as a command line argument
 - `lazy` (bool, default=False)
     - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic`
-- `initial_topic` (str)
-    - Input topic to select on startup. If __none, start with no input topic. If unset, default to first topic in arguments
+- `initial_topic` (str, default="")
+    - Input topic to select on startup. If `__none`, start with no input topic. If unset, default to first topic in arguments
 
 ### Delay
 
