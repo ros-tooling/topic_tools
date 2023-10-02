@@ -96,7 +96,7 @@ ros2 run topic_tools throttle messages <intopic> <msgs_per_sec> [outtopic]
 
 Throttle messages on `intopic` to a particular rate.
 - `intopic`: Incoming topic to subscribe to
-- `msgs_per_sec`: maximum messages per second to let through.
+- `msgs_per_sec`: Maximum messages per second to let through.
 - `outtopic`: Outgoing topic to publish on (default: intopic_throttle)
 
 E.g. throttle bandwidth-hogging laser scans (base_scan) to 1Hz:
@@ -113,7 +113,8 @@ ros2 run topic_tools throttle bytes <intopic> <bytes_per_sec> <window> [outtopic
 
 Throttle messages on `intopic` to a particular rate.
 - `intopic`: Incoming topic to subscribe to
-- `msgs_per_sec`: maximum messages per second to let through.
+- `bytes_per_sec`: Maximum bytes of messages per second to let through.
+- `window`: Time window in seconds to consider
 - `outtopic`: Outgoing topic to publish on (default: intopic_throttle)
 
 E.g. throttle bandwidth-hogging laser scans (base_scan) to 1KBps:
@@ -132,6 +133,14 @@ ros2 run topic_tools throttle bytes base_scan 1024 1.0
     - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic`
 - `use_wall_clock` (bool, default=False)
     - If True, then perform all rate measurements against wall clock time, regardless of whether simulation / log time is in effect.
+- `throttle_type` (string, either `messages` or `bytes`)
+    - Method how to throttle
+- `msgs_per_sec` (double)
+    - Maximum messages per second to let through.
+- `bytes_per_sec` (integer)
+    - Maximum bytes of messages per second to let through.
+- `window` (double)
+    - Time window in seconds to consider
 
 ### Drop
 
@@ -163,8 +172,8 @@ ros2 run topic_tools drop base_scan 1 2
     - the same as if provided as a command line argument
 - `lazy` (bool, default=False)
     - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic`
-- `X`, `Y` (int)
-    - drop X out of every Y incoming messages
+- `X` (int), `Y` (int)
+    - Drop X out of every Y incoming messages
 
 ### Mux
 
@@ -227,7 +236,7 @@ ros2 run topic_tools delay base_scan 0.5
     - the same as if provided as a command line argument
 - `output_topic` (string, default=`<input_topic>_delay`)
     - the same as if provided as a command line argument
-- `lazy` (bool, default=False)
-    - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic`
-- `delay` (double)
+- `delay` (double, default=0.0)
     - delay in seconds
+- `use_wall_clock` (bool, default=False)
+    - If True, then perform all rate measurements against wall clock time, regardless of whether simulation / log time is in effect.
