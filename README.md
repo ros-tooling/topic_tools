@@ -47,7 +47,7 @@ ros2 run topic_tools relay base_scan my_base_scan
 
 ### RelayField
 
-RelayField is a ROS 2 node that allows to republish data in a different message type
+RelayField is a ROS 2 node that allows to republish data in a different message type.
 
 #### Usage
 
@@ -65,7 +65,7 @@ ros2 run topic_tools relay_field /chatter /header std_msgs/Header "{stamp: {sec:
 
 ### Transform
 
-Transform is a ROS 2 node that allows to take a topic or one of it fields and output it on another topic
+Transform is a ROS 2 node that allows to take a topic or one of it fields and output it on another topic.
 
 #### Usage
 
