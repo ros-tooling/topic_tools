@@ -64,6 +64,10 @@ void MuxNode::make_subscribe_unsubscribe_decisions()
 
 void MuxNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
 {
+  std::scoped_lock lock(pub_mutex_);
+  if (!pub_) {
+    return;
+  }
   pub_->publish(*msg);
 }
 
