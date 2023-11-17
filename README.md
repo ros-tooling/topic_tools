@@ -177,7 +177,7 @@ Subscribe to <intopic1>...N and publish currently selected topic to outopic. mux
 E.g. mux two command streams (auto_cmdvel and joystick_cmdvel) into one (sel_cmdvel):
 
 ```
-ros2 run topic_tools topic_tools mux sel_cmdvel auto_cmdvel joystick_cmdvel
+ros2 run topic_tools mux sel_cmdvel auto_cmdvel joystick_cmdvel
 ```
 
 #### Parameters
