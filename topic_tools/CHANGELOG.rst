@@ -2,6 +2,14 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Apply race condition fix to mux (`#78 <https://github.com/ros-tooling/topic_tools/issues/78>`_) (`#88 <https://github.com/ros-tooling/topic_tools/issues/88>`_)
+* Fix windows warnings (`#71 <https://github.com/ros-tooling/topic_tools/issues/71>`_) (`#74 <https://github.com/ros-tooling/topic_tools/issues/74>`_)
+* Make compatible with windows (`#68 <https://github.com/ros-tooling/topic_tools/issues/68>`_) (`#69 <https://github.com/ros-tooling/topic_tools/issues/69>`_)
+* Unit tests for all nodes (`#61 <https://github.com/ros-tooling/topic_tools/issues/61>`_)
+* Contributors: andrewbest-tri, anrp-tri, Emerson Knapp, Martin Llofriu
+
 1.1.0 (2023-05-18)
 ------------------
 * Performance improvement in Python scripts (`#60 <https://github.com/ros-tooling/topic_tools/issues/60>`_)
