@@ -2,8 +2,8 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.1 (2023-11-27)
+------------------
 * Apply race condition fix to mux (`#78 <https://github.com/ros-tooling/topic_tools/issues/78>`_) (`#79 <https://github.com/ros-tooling/topic_tools/issues/79>`_)
 * Fix windows warnings (backport `#71 <https://github.com/ros-tooling/topic_tools/issues/71>`_) (`#73 <https://github.com/ros-tooling/topic_tools/issues/73>`_)
 * Make compatible with windows (`#68 <https://github.com/ros-tooling/topic_tools/issues/68>`_) (`#70 <https://github.com/ros-tooling/topic_tools/issues/70>`_)
