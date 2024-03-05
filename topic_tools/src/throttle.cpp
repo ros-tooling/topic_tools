@@ -20,29 +20,27 @@
 int main(int argc, char * argv[])
 {
   auto args = rclcpp::init_and_remove_ros_arguments(argc, argv);
-  auto options = rclcpp::NodeOptions{};
+  auto options = rclcpp::NodeOptions {};
 
-  if (args.size() < 2) {
-    std::cout << "Throttle type is missing." << std::endl;
-    return 0;
-  }
-  if (args.at(1) == "messages") {
-    options.append_parameter_override("throttle_type", "messages");
-    if (args.size() >= 4) {
-      options.append_parameter_override("input_topic", args.at(2));
-      options.append_parameter_override("msgs_per_sec", std::stod(args.at(3)));
-      if (args.size() >= 5) {
-        options.append_parameter_override("output_topic", args.at(4));
+  if (args.size() >= 2) {
+    if (args.at(1) == "messages") {
+      options.append_parameter_override("throttle_type", "messages");
+      if (args.size() >= 4) {
+        options.append_parameter_override("input_topic", args.at(2));
+        options.append_parameter_override("msgs_per_sec", std::stod(args.at(3)));
+        if (args.size() >= 5) {
+          options.append_parameter_override("output_topic", args.at(4));
+        }
       }
-    }
-  } else if (args.at(1) == "bytes") {
-    options.append_parameter_override("throttle_type", "bytes");
-    if (args.size() >= 5) {
-      options.append_parameter_override("input_topic", args.at(2));
-      options.append_parameter_override("bytes_per_sec", std::stoi(args.at(3)));
-      options.append_parameter_override("window", std::stod(args.at(4)));
-      if (args.size() >= 6) {
-        options.append_parameter_override("output_topic", args.at(5));
+    } else if (args.at(1) == "bytes") {
+      options.append_parameter_override("throttle_type", "bytes");
+      if (args.size() >= 5) {
+        options.append_parameter_override("input_topic", args.at(2));
+        options.append_parameter_override("bytes_per_sec", std::stoi(args.at(3)));
+        options.append_parameter_override("window", std::stod(args.at(4)));
+        if (args.size() >= 6) {
+          options.append_parameter_override("output_topic", args.at(5));
+        }
       }
     }
   }
