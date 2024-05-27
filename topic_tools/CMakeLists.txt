@@ -84,6 +84,22 @@ target_link_libraries(mux
   mux_node
 )
 
+ament_auto_add_library(demux_node SHARED
+  src/demux_node.cpp
+  src/tool_base_node.cpp
+)
+target_compile_definitions(demux_node PRIVATE "TOPIC_TOOLS_BUILDING_LIBRARY")
+
+rclcpp_components_register_nodes(demux_node "topic_tools::DemuxNode")
+
+ament_auto_add_executable(demux
+  src/demux.cpp
+)
+
+target_link_libraries(demux
+  demux_node
+)
+
 ament_auto_add_library(delay_node SHARED
   src/delay_node.cpp
   src/tool_base_node.cpp
@@ -148,6 +164,18 @@ if(BUILD_TESTING)
 
   target_link_libraries(test_mux
     mux_node
+    rclcpp::rclcpp
+    ${std_msgs_TARGETS}
+  )
+
+  ament_add_gtest(test_demux test/test_demux.cpp)
+  target_include_directories(test_demux PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  )
+
+  target_link_libraries(test_demux
+    demux_node
     rclcpp::rclcpp
     ${std_msgs_TARGETS}
   )

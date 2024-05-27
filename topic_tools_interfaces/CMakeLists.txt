@@ -15,6 +15,10 @@ find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
 rosidl_generate_interfaces(${PROJECT_NAME}
+  "srv/DemuxAdd.srv"
+  "srv/DemuxDelete.srv"
+  "srv/DemuxList.srv"
+  "srv/DemuxSelect.srv"
   "srv/MuxAdd.srv"
   "srv/MuxDelete.srv"
   "srv/MuxList.srv"
