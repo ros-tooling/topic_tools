@@ -54,7 +54,7 @@ private:
     const std::shared_ptr<topic_tools_interfaces::srv::DemuxSelect::Request> request,
     std::shared_ptr<topic_tools_interfaces::srv::DemuxSelect::Response> response);
 
-  std::vector<std::string> input_topics_;
+  std::vector<std::string> output_topics_;
   rclcpp::Service<topic_tools_interfaces::srv::DemuxAdd>::SharedPtr demux_add_srv_;
   rclcpp::Service<topic_tools_interfaces::srv::DemuxDelete>::SharedPtr demux_delete_srv_;
   rclcpp::Service<topic_tools_interfaces::srv::DemuxList>::SharedPtr demux_list_srv_;
