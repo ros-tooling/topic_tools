@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef TOPIC_TOOLS__MUX_NODE_HPP_
-#define TOPIC_TOOLS__MUX_NODE_HPP_
+#ifndef TOPIC_TOOLS__DEMUX_NODE_HPP_
+#define TOPIC_TOOLS__DEMUX_NODE_HPP_
 
 #include <memory>
 #include <optional>  // NOLINT : https://github.com/ament/ament_lint/pull/324
@@ -62,4 +62,4 @@ private:
 };
 }  // namespace topic_tools
 
-#endif  // TOPIC_TOOLS__MUX_NODE_HPP_
+#endif  // TOPIC_TOOLS__DEMUX_NODE_HPP_
