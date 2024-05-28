@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "topic_tools/demux_node.hpp"
+
 #include <memory>
-#include <optional> // NOLINT : https://github.com/ament/ament_lint/pull/324
+#include <optional>  // NOLINT : https://github.com/ament/ament_lint/pull/324
 #include <string>
 #include <utility>
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
-#include "topic_tools/demux_node.hpp"
 
 namespace topic_tools
 {
@@ -38,8 +39,7 @@ DemuxNode::DemuxNode(const rclcpp::NodeOptions & options)
   }
 
   discovery_timer_ = this->create_wall_timer(
-    discovery_period_,
-    std::bind(&DemuxNode::make_subscribe_unsubscribe_decisions, this));
+    discovery_period_, std::bind(&DemuxNode::make_subscribe_unsubscribe_decisions, this));
 
   make_subscribe_unsubscribe_decisions();
 
@@ -55,8 +55,10 @@ DemuxNode::DemuxNode(const rclcpp::NodeOptions & options)
 
 void DemuxNode::make_subscribe_unsubscribe_decisions()
 {
-  if (output_topic_ != NONE_TOPIC ||
-    std::find(output_topics_.begin(), output_topics_.end(), output_topic_) != output_topics_.end())
+  if (
+    output_topic_ != NONE_TOPIC ||
+    std::find(output_topics_.begin(), output_topics_.end(), output_topic_) !=
+    output_topics_.end())
   {
     ToolBaseNode::make_subscribe_unsubscribe_decisions();
   }
@@ -85,13 +87,12 @@ void DemuxNode::on_demux_add(
     return;
   }
 
-  if (std::find(
-      output_topics_.begin(), output_topics_.end(),
-      request->topic) != output_topics_.end())
+  if (
+    std::find(output_topics_.begin(), output_topics_.end(), request->topic) !=
+    output_topics_.end())
   {
     RCLCPP_WARN(
-      get_logger(),
-      "tried to add a topic that demux was already listening to: [%s]",
+      get_logger(), "tried to add a topic that demux was already listening to: [%s]",
       request->topic.c_str());
     response->success = false;
     return;
@@ -110,14 +111,13 @@ void DemuxNode::on_demux_delete(
   RCLCPP_INFO(get_logger(), "trying to delete %s to demux", request->topic.c_str());
 
   auto it = std::find_if(
-    output_topics_.begin(), output_topics_.end(),
-    [this, &request](const std::string & topic) {
-      return get_node_topics_interface()->resolve_topic_name(
-        topic) == get_node_topics_interface()->resolve_topic_name(request->topic);
-    }
-  );
+    output_topics_.begin(), output_topics_.end(), [this, &request](const std::string & topic) {
+      return get_node_topics_interface()->resolve_topic_name(topic) ==
+      get_node_topics_interface()->resolve_topic_name(request->topic);
+    });
   if (it != output_topics_.end()) {
-    if (get_node_topics_interface()->resolve_topic_name(output_topic_) ==
+    if (
+      get_node_topics_interface()->resolve_topic_name(output_topic_) ==
       get_node_topics_interface()->resolve_topic_name(request->topic))
     {
       RCLCPP_WARN(
@@ -133,8 +133,7 @@ void DemuxNode::on_demux_delete(
   }
 
   RCLCPP_WARN(
-    get_logger(), "tried to delete non-subscribed topic %s from demux",
-    request->topic.c_str());
+    get_logger(), "tried to delete non-subscribed topic %s from demux", request->topic.c_str());
   response->success = false;
 }
 
@@ -149,13 +148,12 @@ void DemuxNode::on_demux_select(
   const std::shared_ptr<topic_tools_interfaces::srv::DemuxSelect::Request> request,
   std::shared_ptr<topic_tools_interfaces::srv::DemuxSelect::Response> response)
 {
-  auto it = std::find_if(
-    output_topics_.begin(), output_topics_.end(),
-    [this](const std::string & topic) {
-      return get_node_topics_interface()->resolve_topic_name(
-        topic) == get_node_topics_interface()->resolve_topic_name(output_topic_);
-    }
-  );
+  auto it =
+    std::find_if(
+    output_topics_.begin(), output_topics_.end(), [this](const std::string & topic) {
+      return get_node_topics_interface()->resolve_topic_name(topic) ==
+      get_node_topics_interface()->resolve_topic_name(output_topic_);
+    });
   if (it != output_topics_.end()) {
     response->prev_topic = output_topic_;
   } else {
@@ -169,12 +167,10 @@ void DemuxNode::on_demux_select(
   } else {
     RCLCPP_INFO(get_logger(), "trying to switch demux to %s", request->topic.c_str());
     it = std::find_if(
-      output_topics_.begin(), output_topics_.end(),
-      [this, &request](const std::string & topic) {
-        return get_node_topics_interface()->resolve_topic_name(
-          topic) == get_node_topics_interface()->resolve_topic_name(request->topic);
-      }
-    );
+      output_topics_.begin(), output_topics_.end(), [this, &request](const std::string & topic) {
+        return get_node_topics_interface()->resolve_topic_name(topic) ==
+        get_node_topics_interface()->resolve_topic_name(request->topic);
+      });
     if (it != output_topics_.end()) {
       output_topic_ = request->topic;
       make_subscribe_unsubscribe_decisions();

@@ -74,9 +74,9 @@ public:
     target_input_topic_ = "/" + test_name + "/input";
     target_output_topic_ = "/" + test_name + "/output";
     subscription_ = test_node_->create_subscription<std_msgs::msg::String>(
-        target_output_topic_, 10,
-        /* lambda used here instead of bind to have default arguments work */
-        [this](std_msgs::msg::String::ConstSharedPtr msg) {this->topic_callback(msg);});
+      target_output_topic_, 10,
+      /* lambda used here instead of bind to have default arguments work */
+      [this](std_msgs::msg::String::ConstSharedPtr msg) {this->topic_callback(msg);});
     publisher_ = test_node_->create_publisher<std_msgs::msg::String>(target_input_topic_, 10);
   }
 
@@ -128,8 +128,8 @@ public:
     target_input_topic_prefix_ = "/" + test_name + "/input";
     target_output_topic_ = "/" + test_name + "/output";
     subscription_ = test_node_->create_subscription<std_msgs::msg::String>(
-        target_output_topic_, 10,
-        [this](std_msgs::msg::String::ConstSharedPtr msg) {this->topic_callback(msg);});
+      target_output_topic_, 10,
+      [this](std_msgs::msg::String::ConstSharedPtr msg) {this->topic_callback(msg);});
     std::vector<std::string> topic_names = get_target_input_topics();
     for (size_t i = 0; i < topic_names.size(); i++) {
       publishers_[i] = test_node_->create_publisher<std_msgs::msg::String>(
@@ -185,27 +185,28 @@ private:
   std::string target_output_topic_;
 };
 
-class TestTopicToolMultiPub : public TestTopicTool {
+class TestTopicToolMultiPub : public TestTopicTool
+{
 public:
-  void SetUp() {
+  void SetUp()
+  {
     using std::placeholders::_1;
-    const std::string test_name =
-        ::testing::UnitTest::GetInstance()->current_test_info()->name();
+    const std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
     test_node_ = rclcpp::Node::make_shared(test_name);
     target_input_topic_ = "/" + test_name + "/input";
     target_output_topic_prefix_ = "/" + test_name + "/output";
-    publisher_ = test_node_->create_publisher<std_msgs::msg::String>(
-        target_input_topic_, 10);
+    publisher_ = test_node_->create_publisher<std_msgs::msg::String>(target_input_topic_, 10);
     std::vector<std::string> topic_names = get_target_output_topics();
     set_number_of_subscriptions(topic_names.size());
     for (size_t i = 0; i < topic_names.size(); i++) {
       subscriptions_[i] = test_node_->create_subscription<std_msgs::msg::String>(
-          topic_names[i], 10,
-          [this,i](std_msgs::msg::String::ConstSharedPtr msg) {this->topic_callback(msg, i);});
+        topic_names[i], 10,
+        [this, i](std_msgs::msg::String::ConstSharedPtr msg) {this->topic_callback(msg, i);});
     }
   }
 
-  void TearDown() {
+  void TearDown()
+  {
     test_node_.reset();
     publisher_.reset();
     for (int i = 0; i < num_target_output_topics_; i++) {
@@ -213,8 +214,8 @@ public:
     }
   }
 
-  void publish_and_check(std::string msg_content,
-                         std::shared_ptr<rclcpp::Node> target_node) {
+  void publish_and_check(std::string msg_content, std::shared_ptr<rclcpp::Node> target_node)
+  {
     auto message = std_msgs::msg::String();
     message.data = msg_content;
     publisher_->publish(message);
@@ -222,7 +223,8 @@ public:
     rclcpp::spin_some(test_node_);
   }
 
-  std::vector<std::string> get_target_output_topics() {
+  std::vector<std::string> get_target_output_topics()
+  {
     std::vector<std::string> res;
     for (int i = 0; i < num_target_output_topics_; i++) {
       res.push_back(target_output_topic_prefix_ + std::to_string(i));
@@ -230,7 +232,7 @@ public:
     return res;
   }
 
-  std::string get_target_input_topic() { return target_input_topic_; }
+  std::string get_target_input_topic() {return target_input_topic_;}
 
 protected:
   std::shared_ptr<rclcpp::Node> test_node_;
@@ -238,8 +240,8 @@ protected:
 private:
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
   static constexpr int num_target_output_topics_ = 3;
-  std::array<rclcpp::Subscription<std_msgs::msg::String>::SharedPtr,
-    num_target_output_topics_> subscriptions_;
+  std::array<rclcpp::Subscription<std_msgs::msg::String>::SharedPtr, num_target_output_topics_>
+  subscriptions_;
   std::string target_output_topic_prefix_;
   std::string target_input_topic_;
 };

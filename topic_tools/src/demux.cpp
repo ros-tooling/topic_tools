@@ -27,8 +27,7 @@ int main(int argc, char * argv[])
   if (args.size() >= 3) {
     options.append_parameter_override("input_topic", args.at(1));
     options.append_parameter_override(
-      "output_topics",
-      std::vector<std::string>{args.begin() + 2, args.end()});
+      "output_topics", std::vector<std::string>{args.begin() + 2, args.end()});
   }
 
   auto node = std::make_shared<topic_tools::DemuxNode>(options);
@@ -37,4 +36,3 @@ int main(int argc, char * argv[])
   rclcpp::shutdown();
   return 0;
 }
-

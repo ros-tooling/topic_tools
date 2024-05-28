@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
 #include <memory>
 #include <string>
-#include <chrono>
+
 #include "gtest/gtest.h"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
-
-#include "topic_tools/demux_node.hpp"
 #include "test_topic_tool.hpp"
+#include "topic_tools/demux_node.hpp"
 
 class DemuxTest : public TestTopicToolMultiPub
 {
@@ -35,12 +35,11 @@ public:
     options.append_parameter_override("output_topics", get_target_output_topics());
     target_node_ = std::make_shared<topic_tools::DemuxNode>(options);
 
-    srv_client_ = test_node_->create_client<topic_tools_interfaces::srv::DemuxSelect>("/demux/select");
+    srv_client_ =
+      test_node_->create_client<topic_tools_interfaces::srv::DemuxSelect>("/demux/select");
 
     std::function<void(std_msgs::msg::String::ConstSharedPtr)> validator =
-      [](std_msgs::msg::String::ConstSharedPtr msg) {
-        ASSERT_EQ(msg->data, "not dropped");
-      };
+      [](std_msgs::msg::String::ConstSharedPtr msg) {ASSERT_EQ(msg->data, "not dropped");};
     set_msg_validator(validator);
   }
 
@@ -61,8 +60,7 @@ public:
     rclcpp::spin_some(target_node_);
   }
 
-  void publish_and_check(
-    std::string msg_content)
+  void publish_and_check(std::string msg_content)
   {
     TestTopicToolMultiPub::publish_and_check(msg_content, target_node_);
   }
@@ -72,19 +70,22 @@ private:
   std::shared_ptr<rclcpp::Node> target_node_;
 };
 
-TEST_F(DemuxTest, MessagesToTheSelectedTopicArrive) {
+TEST_F(DemuxTest, MessagesToTheSelectedTopicArrive)
+{
   publish_and_check("not dropped");
 
   ASSERT_EQ(get_received_msgs(0), 1);
 }
 
-TEST_F(DemuxTest, MessagesToNonSelectedTopicDontArrive) {
+TEST_F(DemuxTest, MessagesToNonSelectedTopicDontArrive)
+{
   publish_and_check("not dropped");
 
   ASSERT_EQ(get_received_msgs(1), 0);
 }
 
-TEST_F(DemuxTest, SwitchingTopicsWorks) {
+TEST_F(DemuxTest, SwitchingTopicsWorks)
+{
   publish_and_check("not dropped");
   ASSERT_EQ(get_received_msgs(1), 0);
   change_topic(1);
