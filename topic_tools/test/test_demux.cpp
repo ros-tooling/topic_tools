@@ -79,15 +79,15 @@ TEST_F(DemuxTest, MessagesToTheSelectedTopicArrive) {
 }
 
 TEST_F(DemuxTest, MessagesToNonSelectedTopicDontArrive) {
-  publish_and_check("dropped");
+  publish_and_check("not dropped");
 
   ASSERT_EQ(get_received_msgs(1), 0);
 }
 
 TEST_F(DemuxTest, SwitchingTopicsWorks) {
-  publish_and_check("to 0");
+  publish_and_check("not dropped");
   ASSERT_EQ(get_received_msgs(1), 0);
   change_topic(1);
-  publish_and_check("to 1");
+  publish_and_check("not dropped");
   ASSERT_EQ(get_received_msgs(1), 1);
 }
