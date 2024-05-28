@@ -22,17 +22,17 @@
 #include "topic_tools/demux_node.hpp"
 #include "test_topic_tool.hpp"
 
-class DemuxTest : public TestTopicToolMultiSub
+class DemuxTest : public TestTopicToolMultiPub
 {
 public:
   void SetUp()
   {
-    TestTopicToolMultiSub::SetUp();
+    TestTopicToolMultiPub::SetUp();
 
     auto options = rclcpp::NodeOptions{};
-    options.append_parameter_override("initial_topic", get_target_input_topics()[0]);
-    options.append_parameter_override("output_topic", get_target_output_topic());
-    options.append_parameter_override("input_topics", get_target_input_topics());
+    options.append_parameter_override("initial_topic", get_target_output_topics()[0]);
+    options.append_parameter_override("input_topic", get_target_input_topic());
+    options.append_parameter_override("output_topics", get_target_output_topics());
     target_node_ = std::make_shared<topic_tools::DemuxNode>(options);
 
     srv_client_ = test_node_->create_client<topic_tools_interfaces::srv::DemuxSelect>("/demux/select");
@@ -49,7 +49,7 @@ public:
     using namespace std::chrono_literals;
 
     auto request = std::make_shared<topic_tools_interfaces::srv::DemuxSelect::Request>();
-    request->topic = get_target_input_topics()[topic_index];
+    request->topic = get_target_output_topics()[topic_index];
 
     while (!srv_client_->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
@@ -62,10 +62,9 @@ public:
   }
 
   void publish_and_check(
-    std::string msg_content,
-    int publisher_index)
+    std::string msg_content)
   {
-    TestTopicToolMultiSub::publish_and_check(msg_content, publisher_index, target_node_);
+    TestTopicToolMultiPub::publish_and_check(msg_content, target_node_);
   }
 
 private:
@@ -74,27 +73,21 @@ private:
 };
 
 TEST_F(DemuxTest, MessagesToTheSelectedTopicArrive) {
-  publish_and_check("not dropped", 0);
+  publish_and_check("not dropped");
 
-  ASSERT_EQ(get_received_msgs(), 1);
+  ASSERT_EQ(get_received_msgs(0), 1);
 }
 
 TEST_F(DemuxTest, MessagesToNonSelectedTopicDontArrive) {
-  publish_and_check("dropped", 1);
+  publish_and_check("dropped");
 
-  ASSERT_EQ(get_received_msgs(), 0);
+  ASSERT_EQ(get_received_msgs(1), 0);
 }
 
 TEST_F(DemuxTest, SwitchingTopicsWorks) {
-  int expect_to_receive = 0;
-
-  publish_and_check("not dropped", 0);
-  expect_to_receive++;
-
+  publish_and_check("to 0");
+  ASSERT_EQ(get_received_msgs(1), 0);
   change_topic(1);
-  publish_and_check("dropped", 0);
-  publish_and_check("not dropped", 1);
-  expect_to_receive++;
-
-  ASSERT_EQ(get_received_msgs(), expect_to_receive);
+  publish_and_check("to 1");
+  ASSERT_EQ(get_received_msgs(1), 1);
 }
