@@ -218,11 +218,11 @@ and to add and delete output topics. At startup, the first output topic on the c
 #### Usage
 
 ```shell
-ros2 run topic_tools demux <intopic> <outopic1> [outopic2...]
+ros2 run topic_tools demux <intopic> <outtopic1> [outopic2...]
 ```
 
 Subscribe to <intopic1> and publish currently to selected outopic among <outopic1>...N. demux will start with <outopic1> selected.
-- `inttopic`: Incoming topic to subscribe to
+- `intopic`: Incoming topic to subscribe to
 - `outopicN`: Outgoing topic to publish on
 
 E.g. demux one command stream (cmdvel) between two command streams (turtle1_cmdvel and turtle2_cmdvel):
