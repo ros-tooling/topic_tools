@@ -14,6 +14,7 @@ The tools in this package are provided as composable ROS 2 component nodes, so t
 - [Throttle](#throttle): Republishes data with bandwidth or rate limit.
 - [Drop](#drop): Republishes by dropping X out of every Y incoming messages.
 - [Mux](#mux): Multiplexes incoming topics to an output.
+- [Demux](#demux): Demultiplexes an incoming topic to one of multiple outputs
 - [Delay](#delay): Delays and republishes incoming data.
 
 ### Relay
@@ -207,6 +208,37 @@ ros2 run topic_tools mux sel_cmdvel auto_cmdvel joystick_cmdvel
     - If True, only subscribe to `input_topic` if there is at least one subscriber on the `output_topic`
 - `initial_topic` (str, default="")
     - Input topic to select on startup. If `__none`, start with no input topic. If unset, default to first topic in arguments
+
+### Demux
+
+demux is a ROS2 node that subscribes to an incoming topic and republishes incoming data to one of many topic,
+i.e., it's a demultiplexer that switches an input towards 1 of N outputs. Services are offered to switch among output topics,
+and to add and delete output topics. At startup, the first output topic on the command line is selected.
+
+#### Usage
+
+```shell
+ros2 run topic_tools demux <intopic> <outopic1> [outopic2...]
+```
+
+Subscribe to <intopic1> and publish currently to selected outopic among <outopic1>...N. demux will start with <outopic1> selected.
+- `inttopic`: Incoming topic to subscribe to
+- `outopicN`: Outgoing topic to publish on
+
+E.g. demux one command stream (cmdvel) between two command streams (turtle1_cmdvel and turtle2_cmdvel):
+
+```shell
+ros2 run topic_tools demux cmdvel turtle1_cmdvel turtle2_cmdvel
+```
+
+#### Parameters
+
+- `input_topic` (string, default=`~/input`)
+    - the same as if provided as a command line argument
+- `output_topics` (string array)
+    - the same as if provided as a command line argument
+- `initial_topic` (str, default="")
+    - Output topic to select on startup. If `__none`, start with no output topic. If unset, default to first topic in arguments
 
 ### Delay
 
