@@ -31,7 +31,7 @@ DemuxNode::DemuxNode(const rclcpp::NodeOptions & options)
   using std::placeholders::_2;
 
   output_topic_ = declare_parameter("initial_topic", "");
-  input_topic_ = declare_parameter("input_topic", "~/selected");
+  input_topic_ = declare_parameter("input_topic", "~/input");
   lazy_ = false;
   output_topics_ = declare_parameter<std::vector<std::string>>("output_topics");
   if (output_topic_.empty()) {
