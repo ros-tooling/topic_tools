@@ -32,7 +32,7 @@ DemuxNode::DemuxNode(const rclcpp::NodeOptions & options)
 
   output_topic_ = declare_parameter("initial_topic", "");
   input_topic_ = declare_parameter("input_topic", "~/selected");
-  lazy_ = declare_parameter<bool>("lazy", false);
+  lazy_ = false;
   output_topics_ = declare_parameter<std::vector<std::string>>("output_topics");
   if (output_topic_.empty()) {
     output_topic_ = output_topics_.front();
