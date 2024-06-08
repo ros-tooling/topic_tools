@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
 project(topic_tools)
 
+find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(topic_tools_interfaces REQUIRED)
