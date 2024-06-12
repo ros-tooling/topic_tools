@@ -113,7 +113,7 @@ void DemuxNode::on_demux_delete(
   auto it = std::find_if(
     output_topics_.begin(), output_topics_.end(), [this, &request](const std::string & topic) {
       return get_node_topics_interface()->resolve_topic_name(topic) ==
-      get_node_topics_interface()->resolve_topic_name(request->topic);
+             get_node_topics_interface()->resolve_topic_name(request->topic);
     });
   if (it != output_topics_.end()) {
     if (
@@ -152,7 +152,7 @@ void DemuxNode::on_demux_select(
     std::find_if(
     output_topics_.begin(), output_topics_.end(), [this](const std::string & topic) {
       return get_node_topics_interface()->resolve_topic_name(topic) ==
-      get_node_topics_interface()->resolve_topic_name(output_topic_);
+             get_node_topics_interface()->resolve_topic_name(output_topic_);
     });
   if (it != output_topics_.end()) {
     response->prev_topic = output_topic_;
@@ -169,7 +169,7 @@ void DemuxNode::on_demux_select(
     it = std::find_if(
       output_topics_.begin(), output_topics_.end(), [this, &request](const std::string & topic) {
         return get_node_topics_interface()->resolve_topic_name(topic) ==
-        get_node_topics_interface()->resolve_topic_name(request->topic);
+               get_node_topics_interface()->resolve_topic_name(request->topic);
       });
     if (it != output_topics_.end()) {
       output_topic_ = request->topic;
