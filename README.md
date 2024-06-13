@@ -185,10 +185,10 @@ and to add and delete input topics. At startup, the first input topic on the com
 #### Usage
 
 ```shell
-ros2 run topic_tools mux <outopic> <intopic1> [intopic2...]
+ros2 run topic_tools mux <outtopic> <intopic1> [intopic2...]
 ```
 
-Subscribe to <intopic1>...N and publish currently selected topic to outopic. mux will start with <intopic1> selected.
+Subscribe to <intopic1>...N and publish currently selected topic to outtopic. mux will start with <intopic1> selected.
 - `outtopic`: Outgoing topic to publish on
 - `intopicN`: Incoming topic to subscribe to
 
@@ -218,12 +218,12 @@ and to add and delete output topics. At startup, the first output topic on the c
 #### Usage
 
 ```shell
-ros2 run topic_tools demux <intopic> <outtopic1> [outopic2...]
+ros2 run topic_tools demux <intopic> <outtopic1> [outtopic2...]
 ```
 
-Subscribe to <intopic1> and publish currently to selected outopic among <outopic1>...N. demux will start with <outopic1> selected.
+Subscribe to <intopic1> and publish currently to selected outtopic among <outtopic1>...N. demux will start with <outtopic1> selected.
 - `intopic`: Incoming topic to subscribe to
-- `outopicN`: Outgoing topic to publish on
+- `outtopicN`: Outgoing topic to publish on
 
 E.g. demux one command stream (cmdvel) between two command streams (turtle1_cmdvel and turtle2_cmdvel):
 
