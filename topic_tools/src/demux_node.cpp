@@ -30,13 +30,14 @@ DemuxNode::DemuxNode(const rclcpp::NodeOptions & options)
   using std::placeholders::_1;
   using std::placeholders::_2;
 
-  output_topic_ = declare_parameter("initial_topic", "");
+  std::string initial_topic = declare_parameter("initial_topic", "");
   input_topic_ = declare_parameter("input_topic", "~/input");
   lazy_ = false;
   output_topics_ = declare_parameter<std::vector<std::string>>("output_topics");
-  if (output_topic_.empty()) {
-    output_topic_ = output_topics_.front();
+  if (initial_topic.empty()) {
+    initial_topic = output_topics_.front();
   }
+  output_topic_ = initial_topic;
 
   discovery_timer_ = this->create_wall_timer(
     discovery_period_, std::bind(&DemuxNode::make_subscribe_unsubscribe_decisions, this));
