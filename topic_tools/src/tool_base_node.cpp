@@ -31,9 +31,9 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
 {
   if (auto source_info = try_discover_source()) {
     // publisher exists already but needs changing if output_topic_ changes
-    if (
-      pub_ &&
-      pub_->get_topic_name() != get_node_topics_interface()->resolve_topic_name(output_topic_))
+    if (pub_ &&
+      pub_->get_topic_name() !=
+      get_node_topics_interface()->resolve_topic_name(output_topic_))
     {
       pub_.reset();
     }
