@@ -24,12 +24,18 @@ int main(int argc, char * argv[])
   auto args = rclcpp::init_and_remove_ros_arguments(argc, argv);
   auto options = rclcpp::NodeOptions{};
 
-  if (args.size() >= 3) {
-    options.append_parameter_override("output_topic", args.at(1));
-    options.append_parameter_override(
-      "input_topics",
-      std::vector<std::string>{args.begin() + 2, args.end()});
+  if (args.size() < 3) {
+    RCLCPP_ERROR(
+        rclcpp::get_logger("mux"),
+        "Incorect number of arguments. "
+        "Usage: "
+        "ros2 run topic_tools mux <outtopic> <intopic1> [intopic2...]");
+    return 1;
   }
+
+  options.append_parameter_override("output_topic", args.at(1));
+  options.append_parameter_override(
+      "input_topics", std::vector<std::string>{args.begin() + 2, args.end()});
 
   auto node = std::make_shared<topic_tools::MuxNode>(options);
 

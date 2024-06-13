@@ -24,11 +24,18 @@ int main(int argc, char * argv[])
   auto args = rclcpp::init_and_remove_ros_arguments(argc, argv);
   auto options = rclcpp::NodeOptions{};
 
-  if (args.size() >= 3) {
-    options.append_parameter_override("input_topic", args.at(1));
-    options.append_parameter_override(
-      "output_topics", std::vector<std::string>{args.begin() + 2, args.end()});
+  if (args.size() < 3) {
+    RCLCPP_ERROR(
+        rclcpp::get_logger("demux"),
+        "Incorect number of arguments. "
+        "Usage: "
+        "ros2 run topic_tools demux <intopic> <outtopic1> [outtopic2...]");
+    return 1;
   }
+
+  options.append_parameter_override("input_topic", args.at(1));
+  options.append_parameter_override(
+      "output_topics", std::vector<std::string>{args.begin() + 2, args.end()});
 
   auto node = std::make_shared<topic_tools::DemuxNode>(options);
 
