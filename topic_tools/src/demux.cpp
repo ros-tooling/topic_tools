@@ -1,4 +1,4 @@
-// Copyright 2021 Daisuke Nishimatsu
+// Copyright 2024 Rufus Wong
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
-#include "topic_tools/mux_node.hpp"
+#include "topic_tools/demux_node.hpp"
 
 int main(int argc, char * argv[])
 {
@@ -26,18 +26,18 @@ int main(int argc, char * argv[])
 
   if (args.size() < 3) {
     RCLCPP_ERROR(
-        rclcpp::get_logger("mux"),
+        rclcpp::get_logger("demux"),
         "Incorect number of arguments. "
         "Usage: "
-        "ros2 run topic_tools mux <outtopic> <intopic1> [intopic2...]");
+        "ros2 run topic_tools demux <intopic> <outtopic1> [outtopic2...]");
     return 1;
   }
 
-  options.append_parameter_override("output_topic", args.at(1));
+  options.append_parameter_override("input_topic", args.at(1));
   options.append_parameter_override(
-      "input_topics", std::vector<std::string>{args.begin() + 2, args.end()});
+      "output_topics", std::vector<std::string>{args.begin() + 2, args.end()});
 
-  auto node = std::make_shared<topic_tools::MuxNode>(options);
+  auto node = std::make_shared<topic_tools::DemuxNode>(options);
 
   rclcpp::spin(node);
   rclcpp::shutdown();

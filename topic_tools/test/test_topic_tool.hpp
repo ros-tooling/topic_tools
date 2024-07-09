@@ -35,26 +35,31 @@ public:
     rclcpp::shutdown();
   }
 
+  void set_number_of_subscriptions(size_t num_subscriptions = 0)
+  {
+    received_msgs_ = std::vector<int>(num_subscriptions, 0);
+  }
+
   void set_msg_validator(const std::function<void(std_msgs::msg::String::ConstSharedPtr)> & f)
   {
     msg_validator_ = f;
   }
 
-  int get_received_msgs()
+  int get_received_msgs(size_t subscription_idx = 0)
   {
-    return received_msgs_;
+    return received_msgs_[subscription_idx];
   }
 
 protected:
-  void topic_callback(std_msgs::msg::String::ConstSharedPtr msg)
+  void topic_callback(std_msgs::msg::String::ConstSharedPtr msg, size_t subscription_idx = 0)
   {
     msg_validator_(msg);
-    received_msgs_++;
+    received_msgs_[subscription_idx]++;
   }
 
 private:
   std::function<void(std_msgs::msg::String::ConstSharedPtr)> msg_validator_;
-  int received_msgs_{0};
+  std::vector<int> received_msgs_{0};
 };
 
 class TestTopicToolSingleSub : public TestTopicTool
@@ -69,7 +74,9 @@ public:
     target_input_topic_ = "/" + test_name + "/input";
     target_output_topic_ = "/" + test_name + "/output";
     subscription_ = test_node_->create_subscription<std_msgs::msg::String>(
-      target_output_topic_, 10, std::bind(&TestTopicToolSingleSub::topic_callback, this, _1));
+      target_output_topic_, 10,
+      /* lambda used here instead of bind to have default arguments work */
+      [this](std_msgs::msg::String::ConstSharedPtr msg) {this->topic_callback(msg);});
     publisher_ = test_node_->create_publisher<std_msgs::msg::String>(target_input_topic_, 10);
   }
 
@@ -121,7 +128,8 @@ public:
     target_input_topic_prefix_ = "/" + test_name + "/input";
     target_output_topic_ = "/" + test_name + "/output";
     subscription_ = test_node_->create_subscription<std_msgs::msg::String>(
-      target_output_topic_, 10, std::bind(&TestTopicToolMultiSub::topic_callback, this, _1));
+      target_output_topic_, 10,
+      [this](std_msgs::msg::String::ConstSharedPtr msg) {this->topic_callback(msg);});
     std::vector<std::string> topic_names = get_target_input_topics();
     for (size_t i = 0; i < topic_names.size(); i++) {
       publishers_[i] = test_node_->create_publisher<std_msgs::msg::String>(
@@ -175,4 +183,65 @@ private:
     num_target_input_topics_> publishers_;
   std::string target_input_topic_prefix_;
   std::string target_output_topic_;
+};
+
+class TestTopicToolMultiPub : public TestTopicTool
+{
+public:
+  void SetUp()
+  {
+    using std::placeholders::_1;
+    const std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
+    test_node_ = rclcpp::Node::make_shared(test_name);
+    target_input_topic_ = "/" + test_name + "/input";
+    target_output_topic_prefix_ = "/" + test_name + "/output";
+    publisher_ = test_node_->create_publisher<std_msgs::msg::String>(target_input_topic_, 10);
+    std::vector<std::string> topic_names = get_target_output_topics();
+    set_number_of_subscriptions(topic_names.size());
+    for (size_t i = 0; i < topic_names.size(); i++) {
+      subscriptions_[i] = test_node_->create_subscription<std_msgs::msg::String>(
+        topic_names[i], 10,
+        [this, i](std_msgs::msg::String::ConstSharedPtr msg) {this->topic_callback(msg, i);});
+    }
+  }
+
+  void TearDown()
+  {
+    test_node_.reset();
+    publisher_.reset();
+    for (int i = 0; i < num_target_output_topics_; i++) {
+      subscriptions_[i].reset();
+    }
+  }
+
+  void publish_and_check(std::string msg_content, std::shared_ptr<rclcpp::Node> target_node)
+  {
+    auto message = std_msgs::msg::String();
+    message.data = msg_content;
+    publisher_->publish(message);
+    rclcpp::spin_some(target_node);
+    rclcpp::spin_some(test_node_);
+  }
+
+  std::vector<std::string> get_target_output_topics()
+  {
+    std::vector<std::string> res;
+    for (int i = 0; i < num_target_output_topics_; i++) {
+      res.push_back(target_output_topic_prefix_ + std::to_string(i));
+    }
+    return res;
+  }
+
+  std::string get_target_input_topic() {return target_input_topic_;}
+
+protected:
+  std::shared_ptr<rclcpp::Node> test_node_;
+
+private:
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
+  static constexpr int num_target_output_topics_ = 3;
+  std::array<rclcpp::Subscription<std_msgs::msg::String>::SharedPtr, num_target_output_topics_>
+  subscriptions_;
+  std::string target_output_topic_prefix_;
+  std::string target_input_topic_;
 };

@@ -11,10 +11,15 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-find_package(ament_cmake_auto REQUIRED)
-ament_auto_find_build_dependencies()
+find_package(ament_cmake REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(builtin_interfaces REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
+  "srv/DemuxAdd.srv"
+  "srv/DemuxDelete.srv"
+  "srv/DemuxList.srv"
+  "srv/DemuxSelect.srv"
   "srv/MuxAdd.srv"
   "srv/MuxDelete.srv"
   "srv/MuxList.srv"
@@ -28,4 +33,4 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-ament_auto_package()
+ament_package()
