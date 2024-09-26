@@ -195,6 +195,6 @@ install(DIRECTORY launch
 )
 
 install(TARGETS relay throttle drop mux demux delay
- DESTINATION lib/${PROJECT_NAME})
+  DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
