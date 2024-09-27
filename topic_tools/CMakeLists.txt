@@ -183,12 +183,18 @@ if(BUILD_TESTING)
   )
 endif()
 
-install(TARGETS relay_node relay throttle_node throttle drop_node drop mux_node mux demux_node demux delay_node delay
-  DESTINATION lib/${PROJECT_NAME}
+install(TARGETS relay_node throttle_node drop_node mux_node demux_node delay_node
+  EXPORT export_${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
 )
 
 install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}
 )
+
+install(TARGETS relay throttle drop mux demux delay
+  DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
