@@ -2,8 +2,8 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.1 (2024-10-14)
+------------------
 * fix: install python executables again (`#115 <https://github.com/ros-tooling/topic_tools/issues/115>`_)
 * fix: cpp install paths (`#116 <https://github.com/ros-tooling/topic_tools/issues/116>`_)
 * Contributors: Philipp Schnattinger
