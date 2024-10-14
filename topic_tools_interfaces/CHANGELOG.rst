@@ -2,6 +2,9 @@
 Changelog for package topic_tools_interfaces
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.4.0 (2024-09-03)
 ------------------
 * Add demux (`#106 <https://github.com/ros-tooling/topic_tools/issues/106>`_)

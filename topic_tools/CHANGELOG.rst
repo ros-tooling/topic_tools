@@ -2,6 +2,12 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix: install python executables again (`#115 <https://github.com/ros-tooling/topic_tools/issues/115>`_)
+* fix: cpp install paths (`#116 <https://github.com/ros-tooling/topic_tools/issues/116>`_)
+* Contributors: Philipp Schnattinger
+
 1.4.0 (2024-09-03)
 ------------------
 * Fix unsubscribing when switching to none topic (`#111 <https://github.com/ros-tooling/topic_tools/issues/111>`_)
