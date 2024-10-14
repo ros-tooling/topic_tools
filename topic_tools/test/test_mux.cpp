@@ -49,7 +49,11 @@ public:
     using namespace std::chrono_literals;
 
     auto request = std::make_shared<topic_tools_interfaces::srv::MuxSelect::Request>();
-    request->topic = get_target_input_topics()[topic_index];
+    if (topic_index < 0) {
+      request->topic = "__none";
+    } else {
+      request->topic = get_target_input_topics()[topic_index];
+    }
 
     while (!srv_client_->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
@@ -95,6 +99,24 @@ TEST_F(MuxTest, SwitchingTopicsWorks) {
   publish_and_check("dropped", 0);
   publish_and_check("not dropped", 1);
   expect_to_receive++;
+
+  ASSERT_EQ(get_received_msgs(), expect_to_receive);
+}
+
+TEST_F(MuxTest, SwitchingToNoneWorks) {
+  int expect_to_receive = 0;
+
+  publish_and_check("not dropped", 0);
+  expect_to_receive++;
+
+  change_topic(1);
+  publish_and_check("dropped", 0);
+  publish_and_check("not dropped", 1);
+  expect_to_receive++;
+
+  change_topic(-1);
+  publish_and_check("dropped", 0);
+  publish_and_check("not dropped", 1);
 
   ASSERT_EQ(get_received_msgs(), expect_to_receive);
 }
