@@ -3,7 +3,7 @@ on:
   pull_request:
   push:
     branches:
-      - rolling
+      - jazzy
   schedule:
     # Run every hour. This helps detect flakiness,
     # and broken external dependencies.
@@ -17,11 +17,11 @@ jobs:
     steps:
     - uses: ros-tooling/setup-ros@v0.7
       with:
-        required-ros-distributions: rolling
+        required-ros-distributions: jazzy
     - uses: ros-tooling/action-ros-ci@v0.3
       with:
         package-name: topic_tools topic_tools_interfaces
-        target-ros2-distro: rolling
+        target-ros2-distro: jazzy
         colcon-defaults: |
           {
             "build": {
