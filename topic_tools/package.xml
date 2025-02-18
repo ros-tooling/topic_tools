@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>topic_tools</name>
-  <version>1.3.2</version>
+  <version>1.3.3</version>
   <description>
     Tools for directing, throttling, selecting, and otherwise messing with
     ROS 2 topics at a meta level.
