@@ -2,6 +2,11 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Removed manual namespace resolution (`#123 <https://github.com/ros-tooling/topic_tools/issues/123>`_)
+* Contributors: Martin Oehler
+
 1.4.1 (2024-10-14)
 ------------------
 * fix: install python executables again (`#115 <https://github.com/ros-tooling/topic_tools/issues/115>`_)
