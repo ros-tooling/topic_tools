@@ -72,15 +72,11 @@ class Transform(Node):
         except Exception:
             raise
 
-        input_topic_in_ns = args.input
-        if not input_topic_in_ns.startswith('/'):
-            input_topic_in_ns = self.get_namespace() + args.input
-
         input_class = get_msg_class(
-            self, input_topic_in_ns, blocking=args.wait_for_start, include_hidden_topics=True)
+            self, args.input, blocking=args.wait_for_start, include_hidden_topics=True)
 
         if input_class is None:
-            raise RuntimeError(f'ERROR: Wrong input topic: {input_topic_in_ns}')
+            raise RuntimeError(f'ERROR: Wrong input topic: {args.input}')
 
         self.field = args.field
         if self.field is not None:
@@ -90,11 +86,11 @@ class Transform(Node):
 
         self.output_class = get_message(args.output_type)
 
-        qos_profile = self.choose_qos(args, input_topic_in_ns)
+        qos_profile = self.choose_qos(args, args.input)
 
         self.pub = self.create_publisher(self.output_class, args.output_topic, qos_profile)
         self.sub = self.create_subscription(
-            input_class, input_topic_in_ns, self.callback, qos_profile)
+            input_class, args.input, self.callback, qos_profile)
 
     def choose_qos(self, args, topic_name):
 
