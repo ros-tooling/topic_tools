@@ -2,8 +2,8 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.2 (2025-02-18)
+------------------
 * Removed manual namespace resolution (`#123 <https://github.com/ros-tooling/topic_tools/issues/123>`_)
 * Contributors: Martin Oehler
 
