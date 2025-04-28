@@ -21,6 +21,7 @@
 
   <exec_depend>rclpy</exec_depend>
   <exec_depend>ros2cli</exec_depend>
+  <exec_depend>ros2topic</exec_depend>
   <exec_depend>rosidl_runtime_py</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
