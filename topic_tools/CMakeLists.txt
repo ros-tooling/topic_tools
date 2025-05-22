@@ -20,7 +20,9 @@ add_library(relay_node SHARED
   src/relay_node.cpp
   src/tool_base_node.cpp
 )
-ament_target_dependencies(relay_node rclcpp rclcpp_components)
+target_link_libraries(relay_node
+  rclcpp::rclcpp
+  rclcpp_components::component)
 target_compile_definitions(relay_node PRIVATE "TOPIC_TOOLS_BUILDING_LIBRARY")
 
 rclcpp_components_register_nodes(relay_node "topic_tools::RelayNode")
@@ -37,7 +39,9 @@ add_library(throttle_node SHARED
   src/throttle_node.cpp
   src/tool_base_node.cpp
 )
-ament_target_dependencies(throttle_node rclcpp rclcpp_components)
+target_link_libraries(throttle_node
+  rclcpp::rclcpp
+  rclcpp_components::component)
 target_compile_definitions(throttle_node PRIVATE "TOPIC_TOOLS_BUILDING_LIBRARY")
 
 rclcpp_components_register_nodes(throttle_node "topic_tools::ThrottleNode")
@@ -54,7 +58,9 @@ add_library(drop_node SHARED
   src/drop_node.cpp
   src/tool_base_node.cpp
 )
-ament_target_dependencies(drop_node rclcpp rclcpp_components)
+target_link_libraries(drop_node
+  rclcpp::rclcpp
+  rclcpp_components::component)
 target_compile_definitions(drop_node PRIVATE "TOPIC_TOOLS_BUILDING_LIBRARY")
 
 rclcpp_components_register_nodes(drop_node "topic_tools::DropNode")
@@ -71,7 +77,10 @@ add_library(mux_node SHARED
   src/mux_node.cpp
   src/tool_base_node.cpp
 )
-ament_target_dependencies(mux_node rclcpp rclcpp_components topic_tools_interfaces)
+target_link_libraries(mux_node
+  rclcpp::rclcpp
+  rclcpp_components::component
+  ${topic_tools_interfaces_TARGETS})
 target_compile_definitions(mux_node PRIVATE "TOPIC_TOOLS_BUILDING_LIBRARY")
 
 rclcpp_components_register_nodes(mux_node "topic_tools::MuxNode")
@@ -88,7 +97,10 @@ add_library(demux_node SHARED
   src/demux_node.cpp
   src/tool_base_node.cpp
 )
-ament_target_dependencies(demux_node rclcpp rclcpp_components topic_tools_interfaces)
+target_link_libraries(demux_node
+  rclcpp::rclcpp
+  rclcpp_components::component
+  ${topic_tools_interfaces_TARGETS})
 target_compile_definitions(demux_node PRIVATE "TOPIC_TOOLS_BUILDING_LIBRARY")
 
 rclcpp_components_register_nodes(demux_node "topic_tools::DemuxNode")
@@ -105,7 +117,9 @@ add_library(delay_node SHARED
   src/delay_node.cpp
   src/tool_base_node.cpp
 )
-ament_target_dependencies(delay_node rclcpp rclcpp_components)
+target_link_libraries(delay_node
+  rclcpp::rclcpp
+  rclcpp_components::component)
 target_compile_definitions(delay_node PRIVATE "TOPIC_TOOLS_BUILDING_LIBRARY")
 
 rclcpp_components_register_nodes(delay_node "topic_tools::DelayNode")
