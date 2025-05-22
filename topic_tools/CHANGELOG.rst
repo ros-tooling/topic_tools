@@ -2,8 +2,8 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.3 (2025-05-22)
+------------------
 * Replace ament_target_dependencies with target_link_libraries (`#127 <https://github.com/ros-tooling/topic_tools/issues/127>`_)
 * Add missing exec_depend on ros2topic (`#126 <https://github.com/ros-tooling/topic_tools/issues/126>`_)
 * Contributors: Alejandro Hernández Cordero, Christophe Bedard
