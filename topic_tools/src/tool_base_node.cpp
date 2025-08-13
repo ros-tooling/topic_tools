@@ -42,9 +42,9 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
     // always relay same topic type and QoS profile as the first available source
     if (!topic_type_ || !qos_profile_ || *topic_type_ != source_info->first ||
       *qos_profile_ != source_info->second || !pub_)
-      {
+    {
       rclcpp::PublisherOptions options;
-      options.qos_overriding_options =  rclcpp::QosOverridingOptions
+      options.qos_overriding_options = rclcpp::QosOverridingOptions
       {
         rclcpp::QosPolicyKind::Deadline,
         rclcpp::QosPolicyKind::Durability,
@@ -58,7 +58,7 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
 
       // Generic publisher does NOT declare qos parameters, so we need to do it manually
       const rclcpp::QoS & actual_qos = options.qos_overriding_options.get_policy_kinds().size() ?
-      rclcpp::detail::declare_qos_parameters(
+        rclcpp::detail::declare_qos_parameters(
         options.qos_overriding_options, *this,
         this->get_node_topics_interface()->resolve_topic_name(output_topic_),
         *qos_profile_, rclcpp::detail::PublisherQosParametersTraits{}) :
