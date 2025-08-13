@@ -38,14 +38,27 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
       pub_.reset();
     }
 
+
     // always relay same topic type and QoS profile as the first available source
     if (!topic_type_ || !qos_profile_ || *topic_type_ != source_info->first ||
       *qos_profile_ != source_info->second || !pub_)
-    {
+      {
+      rclcpp::PublisherOptions options;
+      options.qos_overriding_options =  rclcpp::QosOverridingOptions
+      {
+        rclcpp::QosPolicyKind::Deadline,
+        rclcpp::QosPolicyKind::Durability,
+        rclcpp::QosPolicyKind::History,
+        rclcpp::QosPolicyKind::Depth,
+        rclcpp::QosPolicyKind::Lifespan,
+        rclcpp::QosPolicyKind::Liveliness,
+        rclcpp::QosPolicyKind::LivelinessLeaseDuration,
+        rclcpp::QosPolicyKind::Reliability,
+      };
       topic_type_ = source_info->first;
       qos_profile_ = source_info->second;
       std::scoped_lock lock(pub_mutex_);
-      pub_ = this->create_generic_publisher(output_topic_, *topic_type_, *qos_profile_);
+      pub_ = this->create_generic_publisher(output_topic_, *topic_type_, *qos_profile_, options);
     }
     // at this point it is certain that our publisher exists
 
