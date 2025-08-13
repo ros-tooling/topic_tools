@@ -36,8 +36,31 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
     {
       topic_type_ = source_info->first;
       qos_profile_ = source_info->second;
+
+      rclcpp::PublisherOptions options;
+      options.qos_overriding_options = rclcpp::QosOverridingOptions(
+        {
+          rclcpp::QosPolicyKind::Deadline,
+          rclcpp::QosPolicyKind::Durability,
+          rclcpp::QosPolicyKind::History,
+          rclcpp::QosPolicyKind::Depth,
+          rclcpp::QosPolicyKind::Lifespan,
+          rclcpp::QosPolicyKind::Liveliness,
+          rclcpp::QosPolicyKind::LivelinessLeaseDuration,
+          rclcpp::QosPolicyKind::Reliability,
+        });
+
+      // NOTE: Because generic_publisher doesn't currently declare the qos parameters automatically
+      // Passing options through so once that's fixed in rclcpp it'll automatically take effect
+      const rclcpp::QoS & actual_qos = rclcpp::detail::declare_qos_parameters(
+        options.qos_overriding_options,
+        *this,
+        get_node_topics_interface()->resolve_topic_name(output_topic_),
+        *qos_profile_,
+        rclcpp::detail::PublisherQosParametersTraits{});
+
       std::scoped_lock lock(pub_mutex_);
-      pub_ = this->create_generic_publisher(output_topic_, *topic_type_, *qos_profile_);
+      pub_ = this->create_generic_publisher(output_topic_, *topic_type_, actual_qos, options);
     }
     // at this point it is certain that our publisher exists
 
