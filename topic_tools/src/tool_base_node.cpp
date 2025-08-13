@@ -38,14 +38,15 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
       pub_.reset();
     }
 
-
     // always relay same topic type and QoS profile as the first available source
     if (!topic_type_ || !qos_profile_ || *topic_type_ != source_info->first ||
       *qos_profile_ != source_info->second || !pub_)
     {
+      topic_type_ = source_info->first;
+      qos_profile_ = source_info->second;
+
       rclcpp::PublisherOptions options;
-      options.qos_overriding_options = rclcpp::QosOverridingOptions
-      {
+      options.qos_overriding_options = rclcpp::QosOverridingOptions({
         rclcpp::QosPolicyKind::Deadline,
         rclcpp::QosPolicyKind::Durability,
         rclcpp::QosPolicyKind::History,
@@ -54,18 +55,17 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
         rclcpp::QosPolicyKind::Liveliness,
         rclcpp::QosPolicyKind::LivelinessLeaseDuration,
         rclcpp::QosPolicyKind::Reliability,
-      };
+      });
 
-      // Generic publisher does NOT declare qos parameters, so we need to do it manually
-      const rclcpp::QoS & actual_qos = options.qos_overriding_options.get_policy_kinds().size() ?
-        rclcpp::detail::declare_qos_parameters(
-        options.qos_overriding_options, *this,
-        this->get_node_topics_interface()->resolve_topic_name(output_topic_),
-        *qos_profile_, rclcpp::detail::PublisherQosParametersTraits{}) :
-        *qos_profile_;
+      // NOTE: Patching a gap in rclcpp, generic_publisher doesn't declare the qos parameters automatically
+      // Keeping this until that's fixed, and passing options through so it'll automatically take effect
+      const rclcpp::QoS & actual_qos = rclcpp::detail::declare_qos_parameters(
+        options.qos_overriding_options,
+        *this,
+        get_node_topics_interface()->resolve_topic_name(output_topic_),
+        *qos_profile_,
+        rclcpp::detail::PublisherQosParametersTraits{});
 
-      topic_type_ = source_info->first;
-      qos_profile_ = source_info->second;
       std::scoped_lock lock(pub_mutex_);
       pub_ = this->create_generic_publisher(output_topic_, *topic_type_, actual_qos, options);
     }
