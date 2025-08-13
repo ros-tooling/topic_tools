@@ -55,10 +55,19 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
         rclcpp::QosPolicyKind::LivelinessLeaseDuration,
         rclcpp::QosPolicyKind::Reliability,
       };
+
+      // Generic publisher does NOT declare qos parameters, so we need to do it manually
+      const rclcpp::QoS & actual_qos = options.qos_overriding_options.get_policy_kinds().size() ?
+      rclcpp::detail::declare_qos_parameters(
+        options.qos_overriding_options, *this,
+        this->get_node_topics_interface()->resolve_topic_name(output_topic_),
+        *qos_profile_, rclcpp::detail::PublisherQosParametersTraits{}) :
+        *qos_profile_;
+
       topic_type_ = source_info->first;
       qos_profile_ = source_info->second;
       std::scoped_lock lock(pub_mutex_);
-      pub_ = this->create_generic_publisher(output_topic_, *topic_type_, *qos_profile_, options);
+      pub_ = this->create_generic_publisher(output_topic_, *topic_type_, actual_qos, options);
     }
     // at this point it is certain that our publisher exists
 
