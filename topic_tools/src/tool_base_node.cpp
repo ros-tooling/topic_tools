@@ -46,19 +46,20 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
       qos_profile_ = source_info->second;
 
       rclcpp::PublisherOptions options;
-      options.qos_overriding_options = rclcpp::QosOverridingOptions({
-        rclcpp::QosPolicyKind::Deadline,
-        rclcpp::QosPolicyKind::Durability,
-        rclcpp::QosPolicyKind::History,
-        rclcpp::QosPolicyKind::Depth,
-        rclcpp::QosPolicyKind::Lifespan,
-        rclcpp::QosPolicyKind::Liveliness,
-        rclcpp::QosPolicyKind::LivelinessLeaseDuration,
-        rclcpp::QosPolicyKind::Reliability,
-      });
+      options.qos_overriding_options = rclcpp::QosOverridingOptions(
+        {
+          rclcpp::QosPolicyKind::Deadline,
+          rclcpp::QosPolicyKind::Durability,
+          rclcpp::QosPolicyKind::History,
+          rclcpp::QosPolicyKind::Depth,
+          rclcpp::QosPolicyKind::Lifespan,
+          rclcpp::QosPolicyKind::Liveliness,
+          rclcpp::QosPolicyKind::LivelinessLeaseDuration,
+          rclcpp::QosPolicyKind::Reliability,
+        });
 
-      // NOTE: Patching a gap in rclcpp, generic_publisher doesn't declare the qos parameters automatically
-      // Keeping this until that's fixed, and passing options through so it'll automatically take effect
+      // NOTE: Because generic_publisher doesn't currently declare the qos parameters automatically
+      // Passing options through so once that's fixed in rclcpp it'll automatically take effect
       const rclcpp::QoS & actual_qos = rclcpp::detail::declare_qos_parameters(
         options.qos_overriding_options,
         *this,
