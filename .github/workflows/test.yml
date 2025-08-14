@@ -5,9 +5,9 @@ on:
     branches:
       - rolling
   schedule:
-    # Run every hour. This helps detect flakiness,
+    # Run every day. This helps detect flakiness,
     # and broken external dependencies.
-    - cron:  '0 * * * *'
+    - cron:  '0 0 * * *'
 
 jobs:
   build_and_test:
@@ -15,10 +15,7 @@ jobs:
     container:
       image: rostooling/setup-ros-docker:ubuntu-noble-latest
     steps:
-    - uses: ros-tooling/setup-ros@v0.7
-      with:
-        required-ros-distributions: rolling
-    - uses: ros-tooling/action-ros-ci@v0.3
+    - uses: ros-tooling/action-ros-ci@v0.4
       with:
         package-name: topic_tools topic_tools_interfaces
         target-ros2-distro: rolling
