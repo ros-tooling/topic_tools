@@ -30,19 +30,15 @@ import os
 import sys
 
 import rclpy
-from rclpy.node import Node
-from rclpy.qos import QoSDurabilityPolicy
-from rclpy.qos import QoSPresetProfiles
-from rclpy.qos import QoSReliabilityPolicy
 from rclpy.utilities import remove_ros_args
 from ros2topic.api import get_msg_class
-from ros2topic.api import qos_profile_from_short_keys
 from rosidl_runtime_py import set_message_fields
 from rosidl_runtime_py.utilities import get_message
 import yaml
 
+from .tool_base_node import ToolBase
 
-class RelayField(Node):
+class RelayField(ToolBase):
 
     def __init__(self, args):
         super().__init__(f'relay_field_{os.getpid()}')
@@ -79,65 +75,6 @@ class RelayField(Node):
                 except SyntaxError:
                     pass
         return res
-
-    def choose_qos(self, args, topic_name):
-
-        if (args.qos_profile is not None or
-                args.qos_reliability is not None or
-                args.qos_durability is not None or
-                args.qos_depth is not None or
-                args.qos_history is not None):
-
-            if args.qos_profile is None:
-                args.qos_profile = 'sensor_data'
-            return qos_profile_from_short_keys(args.qos_profile,
-                                               reliability=args.qos_reliability,
-                                               durability=args.qos_durability,
-                                               depth=args.qos_depth,
-                                               history=args.qos_history)
-
-        qos_profile = QoSPresetProfiles.get_from_short_key('sensor_data')
-        reliability_reliable_endpoints_count = 0
-        durability_transient_local_endpoints_count = 0
-
-        pubs_info = self.get_publishers_info_by_topic(topic_name)
-        publishers_count = len(pubs_info)
-        if publishers_count == 0:
-            return qos_profile
-
-        for info in pubs_info:
-            if (info.qos_profile.reliability == QoSReliabilityPolicy.RELIABLE):
-                reliability_reliable_endpoints_count += 1
-            if (info.qos_profile.durability == QoSDurabilityPolicy.TRANSIENT_LOCAL):
-                durability_transient_local_endpoints_count += 1
-
-        # If all endpoints are reliable, ask for reliable
-        if reliability_reliable_endpoints_count == publishers_count:
-            qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
-        else:
-            if reliability_reliable_endpoints_count > 0:
-                print(
-                    'Some, but not all, publishers are offering '
-                    'QoSReliabilityPolicy.RELIABLE. Falling back to '
-                    'QoSReliabilityPolicy.BEST_EFFORT as it will connect '
-                    'to all publishers'
-                )
-            qos_profile.reliability = QoSReliabilityPolicy.BEST_EFFORT
-
-        # If all endpoints are transient_local, ask for transient_local
-        if durability_transient_local_endpoints_count == publishers_count:
-            qos_profile.durability = QoSDurabilityPolicy.TRANSIENT_LOCAL
-        else:
-            if durability_transient_local_endpoints_count > 0:
-                print(
-                    'Some, but not all, publishers are offering '
-                    'QoSDurabilityPolicy.TRANSIENT_LOCAL. Falling back to '
-                    'QoSDurabilityPolicy.VOLATILE as it will connect '
-                    'to all publishers'
-                )
-            qos_profile.durability = QoSDurabilityPolicy.VOLATILE
-
-        return qos_profile
 
     def callback(self, m):
         try:
