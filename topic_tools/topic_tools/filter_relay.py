@@ -20,6 +20,8 @@ Usage summary.
 
 @author: Alon Nusem
 Allows to republish messages on a different topic based on a matching filter.
+* Examples
+$ ros2 run topic_tools filter_relay /chatter /one "m.data == 1" /two "m.data == 2"
 """  # noqa
 
 import argparse
@@ -88,7 +90,12 @@ def main(argv=sys.argv[1:]):
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter,
         description=(
-            'Allows to relay messages from one topic to others based on filter rules.')
+            'Allows to relay messages from one topic to others based on filter rules.'
+            'Usage:\n\tros2 run topic_tools transform '
+            '<input topic> <output topic> <output type> '
+            '[<expression on m>] [--import numpy tf] [--field <topic_field>]\n\n'
+            'Example:\n\tros2 run topic_tools filter_relay /chatter '
+            '/one "m.data == 1" /two "m.data == 2"')
         )
     parser.add_argument('input', help='Input topic or topic field.')
     parser.add_argument(
