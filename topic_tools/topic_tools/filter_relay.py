@@ -60,7 +60,6 @@ class FilterRelay(ToolBase):
         self.pubs = []
         self.filters = []
         for topic, filter in zip(rules[::2], rules[1::2]):
-            
             try:
                 self.filters.append(eval(f'lambda m: {filter}', self.modules))
             except NameError as e:
@@ -77,8 +76,13 @@ class FilterRelay(ToolBase):
             input_class, args.input, self.callback, qos_profile)
 
     def callback(self, m):
-       return 
-
+        for filter, publisher in zip(self.filters, self.pubs):
+            try:
+                match = filter(m)
+            except Exception:
+                raise
+            if match:
+                publisher.publish(m)
 
 def main(argv=sys.argv[1:]):
     parser = argparse.ArgumentParser(
