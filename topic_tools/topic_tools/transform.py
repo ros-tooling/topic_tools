@@ -39,7 +39,7 @@ from rclpy.utilities import remove_ros_args
 from ros2topic.api import get_msg_class
 from rosidl_runtime_py.utilities import get_message
 
-from .tool_base_node import ToolBase
+from .tool_base_node import ToolBase, add_qos_args
 
 class Transform(ToolBase):
 
@@ -135,34 +135,7 @@ def main(argv=sys.argv[1:]):
         '--wait-for-start', action='store_true',
         help='Wait for input messages.'
     )
-    parser.add_argument(
-        '--qos-profile',
-        choices=rclpy.qos.QoSPresetProfiles.short_keys(),
-        help='Quality of service preset profile to subscribe with (default: sensor_data)'
-    )
-    default_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key('sensor_data')
-    parser.add_argument(
-        '--qos-depth', metavar='N', type=int,
-        help='Queue size setting to subscribe with '
-             '(overrides depth value of --qos-profile option)')
-    parser.add_argument(
-        '--qos-history',
-        choices=rclpy.qos.QoSHistoryPolicy.short_keys(),
-        help='History of samples setting to subscribe with '
-             '(overrides history value of --qos-profile option, default: {})'
-             .format(default_profile.history.short_key))
-    parser.add_argument(
-        '--qos-reliability',
-        choices=rclpy.qos.QoSReliabilityPolicy.short_keys(),
-        help='Quality of service reliability setting to subscribe with '
-             '(overrides reliability value of --qos-profile option, default: '
-             'Automatically match existing publishers )')
-    parser.add_argument(
-        '--qos-durability',
-        choices=rclpy.qos.QoSDurabilityPolicy.short_keys(),
-        help='Quality of service durability setting to subscribe with '
-             '(overrides durability value of --qos-profile option, default: '
-             'Automatically match existing publishers )')
+    add_qos_args(parser)
     parser.add_argument(
         '--field', type=str, default=None,
         help='Transform a selected field of a message. '

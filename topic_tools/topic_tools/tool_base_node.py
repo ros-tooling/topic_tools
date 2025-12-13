@@ -83,3 +83,33 @@ class ToolBase(Node):
             qos_profile.durability = QoSDurabilityPolicy.VOLATILE
 
         return qos_profile
+
+def add_qos_args(parser):
+    parser.add_argument(
+        '--qos-profile',
+        choices=QoSPresetProfiles.short_keys(),
+        help='Quality of service preset profile to subscribe with (default: sensor_data)'
+    )
+    default_profile = QoSPresetProfiles.get_from_short_key('sensor_data')
+    parser.add_argument(
+        '--qos-depth', metavar='N', type=int,
+        help='Queue size setting to subscribe with '
+             '(overrides depth value of --qos-profile option)')
+    parser.add_argument(
+        '--qos-history',
+        choices=QoSHistoryPolicy.short_keys(),
+        help='History of samples setting to subscribe with '
+             '(overrides history value of --qos-profile option, default: {})'
+             .format(default_profile.history.short_key))
+    parser.add_argument(
+        '--qos-reliability',
+        choices=QoSReliabilityPolicy.short_keys(),
+        help='Quality of service reliability setting to subscribe with '
+             '(overrides reliability value of --qos-profile option, default: '
+             'Automatically match existing publishers )')
+    parser.add_argument(
+        '--qos-durability',
+        choices=QoSDurabilityPolicy.short_keys(),
+        help='Quality of service durability setting to subscribe with '
+             '(overrides durability value of --qos-profile option, default: '
+             'Automatically match existing publishers )')
