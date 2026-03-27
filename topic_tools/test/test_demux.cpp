@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <chrono>
+#include <future>
 #include <memory>
 #include <string>
 
@@ -57,7 +58,16 @@ public:
     }
 
     auto result = srv_client_->async_send_request(request);
-    rclcpp::spin_some(target_node_);
+    const auto timeout = std::chrono::steady_clock::now() + 1s;
+    while (result.wait_for(0s) != std::future_status::ready &&
+      std::chrono::steady_clock::now() < timeout)
+    {
+      executor_->spin_node_all(target_node_, std::chrono::nanoseconds(0));
+      executor_->spin_some();
+    }
+
+    ASSERT_EQ(result.wait_for(0s), std::future_status::ready);
+    ASSERT_TRUE(result.get()->success);
   }
 
   void publish_and_check(std::string msg_content)

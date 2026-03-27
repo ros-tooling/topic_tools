@@ -71,6 +71,8 @@ public:
     const std::string test_name =
       ::testing::UnitTest::GetInstance()->current_test_info()->name();
     test_node_ = rclcpp::Node::make_shared(test_name);
+    executor_ = std::make_shared<rclcpp::executors::SingleThreadedExecutor>();
+    executor_->add_node(test_node_);
     target_input_topic_ = "/" + test_name + "/input";
     target_output_topic_ = "/" + test_name + "/output";
     subscription_ = test_node_->create_subscription<std_msgs::msg::String>(
@@ -94,8 +96,8 @@ public:
     auto message = std_msgs::msg::String();
     message.data = msg_content;
     publisher_->publish(message);
-    rclcpp::spin_some(target_node);
-    rclcpp::spin_some(test_node_);
+    executor_->spin_node_all(target_node, std::chrono::nanoseconds(0));
+    executor_->spin_some();
   }
 
   std::string get_target_input_topic()
@@ -112,6 +114,7 @@ private:
   std::shared_ptr<rclcpp::Node> test_node_;
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
+  std::shared_ptr<rclcpp::executors::SingleThreadedExecutor> executor_;
   std::string target_input_topic_;
   std::string target_output_topic_;
 };
@@ -125,6 +128,8 @@ public:
     const std::string test_name =
       ::testing::UnitTest::GetInstance()->current_test_info()->name();
     test_node_ = rclcpp::Node::make_shared(test_name);
+    executor_ = std::make_shared<rclcpp::executors::SingleThreadedExecutor>();
+    executor_->add_node(test_node_);
     target_input_topic_prefix_ = "/" + test_name + "/input";
     target_output_topic_ = "/" + test_name + "/output";
     subscription_ = test_node_->create_subscription<std_msgs::msg::String>(
@@ -155,8 +160,8 @@ public:
     message.data = msg_content;
     assert(publisher_index < num_target_input_topics_);
     publishers_[publisher_index]->publish(message);
-    rclcpp::spin_some(target_node);
-    rclcpp::spin_some(test_node_);
+    executor_->spin_node_all(target_node, std::chrono::nanoseconds(0));
+    executor_->spin_some();
   }
 
   std::vector<std::string> get_target_input_topics()
@@ -175,6 +180,7 @@ public:
 
 protected:
   std::shared_ptr<rclcpp::Node> test_node_;
+  std::shared_ptr<rclcpp::executors::SingleThreadedExecutor> executor_;
 
 private:
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_;
@@ -193,6 +199,8 @@ public:
     using std::placeholders::_1;
     const std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
     test_node_ = rclcpp::Node::make_shared(test_name);
+    executor_ = std::make_shared<rclcpp::executors::SingleThreadedExecutor>();
+    executor_->add_node(test_node_);
     target_input_topic_ = "/" + test_name + "/input";
     target_output_topic_prefix_ = "/" + test_name + "/output";
     publisher_ = test_node_->create_publisher<std_msgs::msg::String>(target_input_topic_, 10);
@@ -219,8 +227,8 @@ public:
     auto message = std_msgs::msg::String();
     message.data = msg_content;
     publisher_->publish(message);
-    rclcpp::spin_some(target_node);
-    rclcpp::spin_some(test_node_);
+    executor_->spin_node_all(target_node, std::chrono::nanoseconds(0));
+    executor_->spin_some();
   }
 
   std::vector<std::string> get_target_output_topics()
@@ -236,6 +244,7 @@ public:
 
 protected:
   std::shared_ptr<rclcpp::Node> test_node_;
+  std::shared_ptr<rclcpp::executors::SingleThreadedExecutor> executor_;
 
 private:
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
