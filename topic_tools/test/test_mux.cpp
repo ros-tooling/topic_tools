@@ -15,7 +15,6 @@
 #include <memory>
 #include <string>
 #include <chrono>
-#include <future>
 #include "gtest/gtest.h"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
@@ -62,17 +61,11 @@ public:
       }
     }
 
-    auto result = srv_client_->async_send_request(request);
-    const auto timeout = std::chrono::steady_clock::now() + 1s;
-    while (result.wait_for(0s) != std::future_status::ready &&
-      std::chrono::steady_clock::now() < timeout)
-    {
-      executor_->spin_node_all(target_node_, std::chrono::nanoseconds(0));
-      executor_->spin_some();
-    }
-
-    ASSERT_EQ(result.wait_for(0s), std::future_status::ready);
-    ASSERT_TRUE(result.get()->success);
+    auto future = srv_client_->async_send_request(request);
+    executor_->spin_node_all(target_node_, std::chrono::nanoseconds(0));
+    const auto ret = executor_->spin_until_future_complete(future, service_call_timeout_);
+    ASSERT_EQ(ret, rclcpp::FutureReturnCode::SUCCESS);
+    ASSERT_TRUE(future.get()->success);
   }
 
   void publish_and_check(
@@ -83,6 +76,7 @@ public:
   }
 
 private:
+  const std::chrono::seconds service_call_timeout_{10};
   rclcpp::Client<topic_tools_interfaces::srv::MuxSelect>::SharedPtr srv_client_;
   std::shared_ptr<rclcpp::Node> target_node_;
 };
