@@ -2,6 +2,13 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.4.4 (2026-04-22)
+------------------
+* Fix race condition on shutdown in try_discover_source() (`#143 <https://github.com/ros-tooling/topic_tools/issues/143>`_)
+* Replace deprecated rclcpp::spin_some (`#144 <https://github.com/ros-tooling/topic_tools/issues/144>`_)
+* Enable QOS Overrides to All Publishers (`#131 <https://github.com/ros-tooling/topic_tools/issues/131>`_)
+* Contributors: Christoph Fröhlich, Marq Rasmussen, Zeerek Ahmad, Emerson Knapp
+
 1.4.3 (2025-05-22)
 ------------------
 * Replace ament_target_dependencies with target_link_libraries (`#127 <https://github.com/ros-tooling/topic_tools/issues/127>`_)
