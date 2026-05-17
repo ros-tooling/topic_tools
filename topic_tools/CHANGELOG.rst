@@ -2,6 +2,12 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix race condition on shutdown in try_discover_source() (`#143 <https://github.com/ros-tooling/topic_tools/issues/143>`_) (`#150 <https://github.com/ros-tooling/topic_tools/issues/150>`_)
+* Enable QOS Overrides to All Publishers (`#131 <https://github.com/ros-tooling/topic_tools/issues/131>`_) (`#133 <https://github.com/ros-tooling/topic_tools/issues/133>`_)
+* Contributors: mergify[bot]
+
 1.4.2 (2025-02-18)
 ------------------
 * Removed manual namespace resolution (`#123 <https://github.com/ros-tooling/topic_tools/issues/123>`_)
