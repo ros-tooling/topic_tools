@@ -2,6 +2,12 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix race condition on shutdown in try_discover_source() (`#143 <https://github.com/ros-tooling/topic_tools/issues/143>`_) (`#152 <https://github.com/ros-tooling/topic_tools/issues/152>`_)
+* Enable QOS Overrides to All Publishers (`#131 <https://github.com/ros-tooling/topic_tools/issues/131>`_) (`#134 <https://github.com/ros-tooling/topic_tools/issues/134>`_)
+* Contributors: mergify[bot]
+
 1.1.1 (2023-11-27)
 ------------------
 * Apply race condition fix to mux (`#78 <https://github.com/ros-tooling/topic_tools/issues/78>`_) (`#79 <https://github.com/ros-tooling/topic_tools/issues/79>`_)
