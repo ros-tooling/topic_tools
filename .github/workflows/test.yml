@@ -3,7 +3,7 @@ on:
   pull_request:
   push:
     branches:
-      - rolling
+      - lyrical
   schedule:
     # Run every day. This helps detect flakiness,
     # and broken external dependencies.
@@ -13,12 +13,12 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/ros-tooling/setup-ros-docker/setup-ros-docker-ubuntu-resolute:latest
+      image: ghcr.io/ros-tooling/setup-ros-docker/setup-ros-docker-ubuntu-resolute-testing:latest
     steps:
     - uses: ros-tooling/action-ros-ci@v0.4
       with:
         package-name: topic_tools topic_tools_interfaces
-        target-ros2-distro: rolling
+        target-ros2-distro: lyrical
         colcon-defaults: |
           {
             "build": {
