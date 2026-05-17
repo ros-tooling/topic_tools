@@ -10,7 +10,7 @@ jobs:
     name: ament_${{ matrix.linter }}
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/ros-tooling/setup-ros-docker/setup-ros-docker-ubuntu-resolute-ros-rolling-ros-base:master
+      image: ghcr.io/ros-tooling/setup-ros-docker/setup-ros-docker-ubuntu-resolute-ros-lyrical-ros-base:master
     strategy:
       fail-fast: false
       matrix:
@@ -28,5 +28,5 @@ jobs:
     - uses: ros-tooling/action-ros-lint@0.1.4
       with:
         linter: ${{ matrix.linter }}
-        distribution: rolling
+        distribution: lyrical
         package-name: topic_tools topic_tools_interfaces
