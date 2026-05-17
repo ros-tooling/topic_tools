@@ -2,8 +2,8 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.5 (2026-05-17)
+------------------
 * Fix race condition on shutdown in try_discover_source() (`#143 <https://github.com/ros-tooling/topic_tools/issues/143>`_) (`#150 <https://github.com/ros-tooling/topic_tools/issues/150>`_)
 * Enable QOS Overrides to All Publishers (`#131 <https://github.com/ros-tooling/topic_tools/issues/131>`_) (`#133 <https://github.com/ros-tooling/topic_tools/issues/133>`_)
 * Contributors: mergify[bot]
