@@ -67,7 +67,6 @@ class TestTopicToolSingleSub : public TestTopicTool
 public:
   void SetUp()
   {
-    using std::placeholders::_1;
     const std::string test_name =
       ::testing::UnitTest::GetInstance()->current_test_info()->name();
     test_node_ = rclcpp::Node::make_shared(test_name);
@@ -124,7 +123,6 @@ class TestTopicToolMultiSub : public TestTopicTool
 public:
   void SetUp()
   {
-    using std::placeholders::_1;
     const std::string test_name =
       ::testing::UnitTest::GetInstance()->current_test_info()->name();
     test_node_ = rclcpp::Node::make_shared(test_name);
@@ -196,7 +194,6 @@ class TestTopicToolMultiPub : public TestTopicTool
 public:
   void SetUp()
   {
-    using std::placeholders::_1;
     const std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
     test_node_ = rclcpp::Node::make_shared(test_name);
     executor_ = std::make_shared<rclcpp::executors::SingleThreadedExecutor>();
