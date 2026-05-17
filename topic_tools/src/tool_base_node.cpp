@@ -95,6 +95,12 @@ void ToolBaseNode::make_subscribe_unsubscribe_decisions()
 
 std::optional<std::pair<std::string, rclcpp::QoS>> ToolBaseNode::try_discover_source()
 {
+  // Guard against calls that race with rclcpp::shutdown(): after the context is
+  // invalidated get_publishers_info_by_topic() will throw an RCLError.
+  if (!rclcpp::ok(this->get_node_base_interface()->get_context())) {
+    return {};
+  }
+
   // borrowed this from domain bridge
   // (https://github.com/ros2/domain_bridge/blob/main/src/domain_bridge/wait_for_graph_events.hpp)
   // Query QoS info for publishers
