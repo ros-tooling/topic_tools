@@ -10,6 +10,7 @@ The tools in this package are provided as composable ROS 2 component nodes, so t
 
 - [Relay](#relay): Subscribes to a topic and republishes to another.
 - [RelayField](#relayfield): Republishes data in a different message type.
+- [FilterRelay](#filterrelay): Republishes messages on different topics depending on matching filters.
 - [Transform](#transform): Manipulates a topic or a field and outputs data on another topic.
 - [Throttle](#throttle): Republishes data with bandwidth or rate limit.
 - [Drop](#drop): Republishes by dropping X out of every Y incoming messages.
@@ -62,6 +63,24 @@ E.g. publish the contents of the `data` field in a `std_msgs/msg/String` onto th
 
 ```shell
 ros2 run topic_tools relay_field /chatter /header std_msgs/Header "{stamp: {sec: 0, nanosec: 0}, frame_id: m.data}"
+```
+
+### FilterRelay
+
+FilterRelay is a ROS 2 node that subscribes to a topic, and depending on conditional filters can republish a message on different topics.
+
+#### Usage
+
+```shell
+ros2 run topic_tools filter_relay <input topic> <output topic 1> <output filter 1> <output topic 2> <output filter 2> [--import <modules>]
+```
+
+Subscribe to `input topic` and if incoming message matches output filter N, republish on output topic N.
+
+E.g. Split a pointcloud topic into two different topics depending on the frame_id:
+
+```shell
+ros2 run topic_tools filter_relay /chatter /one "m.header.frame_id == 'one'" /two "m.header.frame_id == 'two'"
 ```
 
 ### Transform
