@@ -2,6 +2,12 @@
 Changelog for package topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add <numeric> for std::accumulate (`#157 <https://github.com/ros-tooling/topic_tools/issues/157>`_)
+* Update GitHub CI config to use Ubuntu 26.04 Resolute (`#153 <https://github.com/ros-tooling/topic_tools/issues/153>`_)
+* Contributors: Christoph Fröhlich, Christophe Bedard
+
 1.6.0 (2026-05-17)
 ------------------
 

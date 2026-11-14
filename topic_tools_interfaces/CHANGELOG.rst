@@ -2,6 +2,9 @@
 Changelog for package topic_tools_interfaces
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.6.0 (2026-05-17)
 ------------------
 
