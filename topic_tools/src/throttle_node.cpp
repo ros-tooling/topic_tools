@@ -14,6 +14,7 @@
 
 #include <deque>
 #include <memory>
+#include <numeric>
 #include <optional> // NOLINT : https://github.com/ament/ament_lint/pull/324
 #include <string>
 #include <utility>
