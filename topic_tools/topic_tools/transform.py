@@ -35,17 +35,13 @@ import os
 import sys
 
 import rclpy
-from rclpy.node import Node
-from rclpy.qos import QoSDurabilityPolicy
-from rclpy.qos import QoSPresetProfiles
-from rclpy.qos import QoSReliabilityPolicy
 from rclpy.utilities import remove_ros_args
 from ros2topic.api import get_msg_class
-from ros2topic.api import qos_profile_from_short_keys
 from rosidl_runtime_py.utilities import get_message
 
+from .tool_base_node import ToolBase, add_qos_args
 
-class Transform(Node):
+class Transform(ToolBase):
 
     def __init__(self, args):
         super().__init__(f'transform_{os.getpid()}')
@@ -91,65 +87,6 @@ class Transform(Node):
         self.pub = self.create_publisher(self.output_class, args.output_topic, qos_profile)
         self.sub = self.create_subscription(
             input_class, args.input, self.callback, qos_profile)
-
-    def choose_qos(self, args, topic_name):
-
-        if (args.qos_profile is not None or
-                args.qos_reliability is not None or
-                args.qos_durability is not None or
-                args.qos_depth is not None or
-                args.qos_history is not None):
-
-            if args.qos_profile is None:
-                args.qos_profile = 'sensor_data'
-            return qos_profile_from_short_keys(args.qos_profile,
-                                               reliability=args.qos_reliability,
-                                               durability=args.qos_durability,
-                                               depth=args.qos_depth,
-                                               history=args.qos_history)
-
-        qos_profile = QoSPresetProfiles.get_from_short_key('sensor_data')
-        reliability_reliable_endpoints_count = 0
-        durability_transient_local_endpoints_count = 0
-
-        pubs_info = self.get_publishers_info_by_topic(topic_name)
-        publishers_count = len(pubs_info)
-        if publishers_count == 0:
-            return qos_profile
-
-        for info in pubs_info:
-            if (info.qos_profile.reliability == QoSReliabilityPolicy.RELIABLE):
-                reliability_reliable_endpoints_count += 1
-            if (info.qos_profile.durability == QoSDurabilityPolicy.TRANSIENT_LOCAL):
-                durability_transient_local_endpoints_count += 1
-
-        # If all endpoints are reliable, ask for reliable
-        if reliability_reliable_endpoints_count == publishers_count:
-            qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
-        else:
-            if reliability_reliable_endpoints_count > 0:
-                print(
-                    'Some, but not all, publishers are offering '
-                    'QoSReliabilityPolicy.RELIABLE. Falling back to '
-                    'QoSReliabilityPolicy.BEST_EFFORT as it will connect '
-                    'to all publishers'
-                )
-            qos_profile.reliability = QoSReliabilityPolicy.BEST_EFFORT
-
-        # If all endpoints are transient_local, ask for transient_local
-        if durability_transient_local_endpoints_count == publishers_count:
-            qos_profile.durability = QoSDurabilityPolicy.TRANSIENT_LOCAL
-        else:
-            if durability_transient_local_endpoints_count > 0:
-                print(
-                    'Some, but not all, publishers are offering '
-                    'QoSDurabilityPolicy.TRANSIENT_LOCAL. Falling back to '
-                    'QoSDurabilityPolicy.VOLATILE as it will connect '
-                    'to all publishers'
-                )
-            qos_profile.durability = QoSDurabilityPolicy.VOLATILE
-
-        return qos_profile
 
     def callback(self, m):
         if self.field is not None:
@@ -198,34 +135,7 @@ def main(argv=sys.argv[1:]):
         '--wait-for-start', action='store_true',
         help='Wait for input messages.'
     )
-    parser.add_argument(
-        '--qos-profile',
-        choices=rclpy.qos.QoSPresetProfiles.short_keys(),
-        help='Quality of service preset profile to subscribe with (default: sensor_data)'
-    )
-    default_profile = rclpy.qos.QoSPresetProfiles.get_from_short_key('sensor_data')
-    parser.add_argument(
-        '--qos-depth', metavar='N', type=int,
-        help='Queue size setting to subscribe with '
-             '(overrides depth value of --qos-profile option)')
-    parser.add_argument(
-        '--qos-history',
-        choices=rclpy.qos.QoSHistoryPolicy.short_keys(),
-        help='History of samples setting to subscribe with '
-             '(overrides history value of --qos-profile option, default: {})'
-             .format(default_profile.history.short_key))
-    parser.add_argument(
-        '--qos-reliability',
-        choices=rclpy.qos.QoSReliabilityPolicy.short_keys(),
-        help='Quality of service reliability setting to subscribe with '
-             '(overrides reliability value of --qos-profile option, default: '
-             'Automatically match existing publishers )')
-    parser.add_argument(
-        '--qos-durability',
-        choices=rclpy.qos.QoSDurabilityPolicy.short_keys(),
-        help='Quality of service durability setting to subscribe with '
-             '(overrides durability value of --qos-profile option, default: '
-             'Automatically match existing publishers )')
+    add_qos_args(parser)
     parser.add_argument(
         '--field', type=str, default=None,
         help='Transform a selected field of a message. '
