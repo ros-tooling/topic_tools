@@ -54,7 +54,7 @@ ThrottleNode::ThrottleNode(const rclcpp::NodeOptions & options)
   make_subscribe_unsubscribe_decisions();
 }
 
-void ThrottleNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
+void ThrottleNode::process_message(std::shared_ptr<const rclcpp::SerializedMessage> msg)
 {
   std::scoped_lock lock(pub_mutex_);
   if (!pub_) {

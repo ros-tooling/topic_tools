@@ -32,7 +32,7 @@ public:
   explicit DelayNode(const rclcpp::NodeOptions & options);
 
 private:
-  void process_message(std::shared_ptr<rclcpp::SerializedMessage> msg) override;
+  void process_message(std::shared_ptr<const rclcpp::SerializedMessage> msg) override;
 
   rclcpp::Duration delay_;
   bool use_wall_clock_;

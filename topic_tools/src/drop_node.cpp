@@ -38,7 +38,7 @@ DropNode::DropNode(const rclcpp::NodeOptions & options)
   make_subscribe_unsubscribe_decisions();
 }
 
-void DropNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
+void DropNode::process_message(std::shared_ptr<const rclcpp::SerializedMessage> msg)
 {
   if (count_ >= x_) {
     pub_->publish(*msg);

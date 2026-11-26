@@ -36,7 +36,7 @@ DelayNode::DelayNode(const rclcpp::NodeOptions & options)
   make_subscribe_unsubscribe_decisions();
 }
 
-void DelayNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
+void DelayNode::process_message(std::shared_ptr<const rclcpp::SerializedMessage> msg)
 {
   auto clock = use_wall_clock_ ? std::make_shared<rclcpp::Clock>() : this->get_clock();
   auto slot = timers_.insert(timers_.end(), nullptr);
