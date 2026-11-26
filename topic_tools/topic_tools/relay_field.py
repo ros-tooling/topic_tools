@@ -35,8 +35,8 @@ from rclpy.qos import QoSDurabilityPolicy
 from rclpy.qos import QoSPresetProfiles
 from rclpy.qos import QoSReliabilityPolicy
 from rclpy.utilities import remove_ros_args
+from ros2cli.qos import qos_profile_from_short_keys
 from ros2topic.api import get_msg_class
-from ros2topic.api import qos_profile_from_short_keys
 from rosidl_runtime_py import set_message_fields
 from rosidl_runtime_py.utilities import get_message
 import yaml
