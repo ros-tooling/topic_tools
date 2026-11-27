@@ -65,7 +65,7 @@ void DemuxNode::make_subscribe_unsubscribe_decisions()
   }
 }
 
-void DemuxNode::process_message(std::shared_ptr<rclcpp::SerializedMessage> msg)
+void DemuxNode::process_message(std::shared_ptr<const rclcpp::SerializedMessage> msg)
 {
   std::scoped_lock lock(pub_mutex_);
   if (!pub_) {

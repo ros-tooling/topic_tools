@@ -33,7 +33,7 @@ public:
   explicit DropNode(const rclcpp::NodeOptions & options);
 
 private:
-  void process_message(std::shared_ptr<rclcpp::SerializedMessage> msg) override;
+  void process_message(std::shared_ptr<const rclcpp::SerializedMessage> msg) override;
 
   int64_t x_;
   int64_t y_;

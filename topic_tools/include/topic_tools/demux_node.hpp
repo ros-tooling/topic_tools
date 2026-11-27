@@ -39,7 +39,7 @@ public:
   explicit DemuxNode(const rclcpp::NodeOptions & options);
 
 private:
-  void process_message(std::shared_ptr<rclcpp::SerializedMessage> msg) override;
+  void process_message(std::shared_ptr<const rclcpp::SerializedMessage> msg) override;
   void make_subscribe_unsubscribe_decisions() override;
   void on_demux_add(
     const std::shared_ptr<topic_tools_interfaces::srv::DemuxAdd::Request> request,
